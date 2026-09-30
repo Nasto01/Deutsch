@@ -1,0 +1,2014 @@
+<!doctype html>
+<html lang="sk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Mein Deutschheft</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@400;600;800&family=Patrick+Hand&display=swap">
+<style>
+/* Layout: a squared school notebook (Kästchenpapier) — tabs like notebook tabs, cards like stickers; dark = chalkboard. Gender colors follow German school convention: der blue, die red, das green. */
+:root{
+  --paper:#f8fbff; --grid:#dbe6f2; --ink:#1c2a4a; --muted:#5a6788;
+  --pen:#2350b8; --pen-soft:#e3ebfb; --card:#ffffff; --line:#c9d6ea;
+  --der:#2563c9; --die:#d0342c; --das:#18864a;
+  --mark-bg:#fff06a; --mark-fg:#1c2a4a; --ok:#18864a; --bad:#d0342c;
+  --shadow:0 2px 0 #c9d6ea;
+  --f-display:"Baloo 2", "Trebuchet MS", system-ui, sans-serif;
+  --f-body:"Nunito", "Segoe UI", system-ui, sans-serif;
+  --f-hand:"Patrick Hand", "Comic Sans MS", cursive;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#1d2a26; --grid:#26362f; --ink:#eef3ea; --muted:#a9b8ae;
+  --pen:#9cc0ff; --pen-soft:#2a3a4f; --card:#24332e; --line:#3a4d45;
+  --der:#8fb8ff; --die:#ff8f86; --das:#7fdc9f;
+  --mark-bg:#e3cf4f; --mark-fg:#1d2a26; --ok:#7fdc9f; --bad:#ff8f86;
+  --shadow:0 2px 0 #13201b; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#1d2a26; --grid:#26362f; --ink:#eef3ea; --muted:#a9b8ae;
+  --pen:#9cc0ff; --pen-soft:#2a3a4f; --card:#24332e; --line:#3a4d45;
+  --der:#8fb8ff; --die:#ff8f86; --das:#7fdc9f;
+  --mark-bg:#e3cf4f; --mark-fg:#1d2a26; --ok:#7fdc9f; --bad:#ff8f86;
+  --shadow:0 2px 0 #13201b; color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:22px 22px;}
+.wrap{max-width:980px;margin:0 auto;padding-inline:16px;padding-block:18px 60px}
+h1,h2,h3{font-family:var(--f-display);line-height:1.1;text-wrap:balance;margin:0}
+h1{font-size:clamp(2rem,6vw,3rem);font-weight:800;color:var(--pen)}
+h2{font-size:1.7rem;font-weight:800;margin-bottom:6px}
+h3{font-size:1.25rem;font-weight:600;margin-bottom:6px}
+p{margin:0}
+.hand{font-family:var(--f-hand);font-size:1.15rem;color:var(--muted)}
+.mark{background:var(--mark-bg);color:var(--mark-fg);padding:0 4px;border-radius:3px}
+
+header.top{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:flex-end;justify-content:space-between;margin-bottom:14px}
+.top .sub{font-family:var(--f-hand);font-size:1.25rem;color:var(--muted);margin-top:4px}
+.controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.stars{font-family:var(--f-display);font-size:1.3rem;font-weight:800;background:var(--card);border:2px solid var(--line);border-radius:999px;padding:4px 14px;display:flex;gap:6px;align-items:center}
+.stars svg{width:22px;height:22px;fill:var(--mark-bg);stroke:var(--ink);stroke-width:1.2}
+.toggle{display:flex;align-items:center;gap:8px;background:var(--card);border:2px solid var(--line);border-radius:999px;padding:6px 14px;font-weight:800;cursor:pointer;color:var(--ink);font-family:var(--f-body);font-size:.95rem}
+.toggle[aria-pressed="true"]{background:var(--pen);color:var(--paper);border-color:var(--pen)}
+
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);padding-block:8px;margin-bottom:18px;border-bottom:2px solid var(--line)}
+.tabs .row{display:flex;flex-wrap:nowrap;gap:6px;overflow-x:auto;scrollbar-width:thin;padding-bottom:2px}
+.tabs button{flex:0 0 auto;font-family:var(--f-display);font-weight:600;font-size:1.05rem;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px 12px 4px 4px;padding:6px 14px;cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--pen);border-color:var(--pen);color:var(--paper)}
+button:focus-visible,input:focus-visible,select:focus-visible,.say:focus-visible{outline:3px solid var(--mark-bg);outline-offset:2px}
+
+.panel{display:grid;gap:22px}
+.intro{display:grid;gap:6px;max-width:68ch}
+.note{background:var(--card);border:2px dashed var(--line);border-radius:12px;padding:12px 16px;max-width:72ch}
+.note b{color:var(--pen)}
+
+.grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}
+.say{display:flex;gap:10px;align-items:flex-start;text-align:left;background:var(--card);color:var(--ink);border:2px solid var(--line);border-radius:14px;padding:10px 12px;cursor:pointer;font:inherit;box-shadow:var(--shadow);transition:transform .08s}
+.say:hover{border-color:var(--pen)}
+.say:active{transform:translateY(2px);box-shadow:none}
+.say.playing{border-color:var(--pen);background:var(--pen-soft)}
+.say .de{font-weight:800;font-size:1.12rem;display:block}
+.say .sk{color:var(--muted);font-size:.95rem;display:block}
+.say .tip{font-family:var(--f-hand);color:var(--pen);font-size:1rem;display:block}
+.say .txt{min-width:0}
+.spk{flex:0 0 auto;width:30px;height:30px;border-radius:50%;background:var(--pen);display:grid;place-items:center;margin-top:2px}
+.spk svg{width:17px;height:17px;fill:var(--paper)}
+
+.abc{display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(88px,1fr))}
+.abc .say{flex-direction:column;align-items:center;text-align:center;gap:0;padding:8px 6px}
+.abc .L{font-family:var(--f-display);font-size:2rem;font-weight:800;line-height:1;color:var(--pen)}
+.abc .n{font-family:var(--f-hand);font-size:1.05rem}
+.abc .w{font-size:.82rem;color:var(--muted)}
+.abc .special .L{color:var(--die)}
+
+.nums{display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(108px,1fr))}
+.nums .say{flex-direction:column;align-items:center;text-align:center;gap:0}
+.nums .d{font-family:var(--f-display);font-size:2.1rem;font-weight:800;line-height:1;color:var(--pen)}
+.nums .teen .d{color:var(--das)}
+
+.dialog{display:grid;gap:8px;max-width:640px}
+.bubble{display:flex;gap:10px;align-items:flex-start}
+.bubble.r{flex-direction:row-reverse}
+.who{flex:0 0 auto;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-display);font-weight:800;color:var(--paper);font-size:1.1rem}
+.who.f{background:var(--der)} .who.l{background:var(--die)}
+.bubble .say{max-width:460px}
+.btn{font-family:var(--f-display);font-weight:600;font-size:1.05rem;border:2px solid var(--pen);background:var(--pen);color:var(--paper);border-radius:12px;padding:8px 16px;cursor:pointer}
+.btn.ghost{background:var(--card);color:var(--pen)}
+.btn:disabled{opacity:.5;cursor:default}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.tabs .row{flex-wrap:nowrap}
+
+.me{display:grid;gap:10px;background:var(--card);border:2px solid var(--line);border-radius:16px;padding:16px;max-width:640px}
+.me label{font-weight:800;display:grid;gap:4px}
+.me input,.me select{font:inherit;font-size:1.05rem;padding:8px 10px;border-radius:10px;border:2px solid var(--line);background:var(--paper);color:var(--ink);min-width:0}
+.me .out{font-family:var(--f-hand);font-size:1.4rem;color:var(--pen)}
+
+.gram{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));align-items:start}
+.box{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:16px;display:grid;gap:10px;min-width:0}
+.box h3 .tag{font-family:var(--f-body);font-size:.75rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);display:block;font-weight:800}
+table{border-collapse:collapse;width:100%}
+td{padding:6px 8px;border-bottom:1px dashed var(--line);vertical-align:middle}
+td:first-child{color:var(--muted);width:40%}
+td.v{font-weight:800}
+td.v .end{color:var(--die)}
+.tsay{background:none;border:0;padding:0;font:inherit;color:inherit;cursor:pointer;display:inline-flex;gap:6px;align-items:center;text-align:left}
+.tsay::after{content:"";width:14px;height:14px;flex:0 0 auto;background:var(--pen);-webkit-mask:var(--spk) center/contain no-repeat;mask:var(--spk) center/contain no-repeat;opacity:.8}
+:root{--spk:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4z'/%3E%3C/svg%3E")}
+.der{color:var(--der);font-weight:800} .die{color:var(--die);font-weight:800} .das{color:var(--das);font-weight:800}
+.ex{display:grid;gap:4px}
+
+.pron{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(270px,1fr))}
+.pron .box{gap:6px}
+.pron .rule{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.pron .g{font-family:var(--f-display);font-size:1.8rem;font-weight:800;color:var(--pen);line-height:1}
+.pron .as{font-family:var(--f-hand);font-size:1.2rem}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:2px solid var(--line);background:var(--paper);color:var(--ink);border-radius:999px;padding:3px 12px;font:inherit;font-weight:800;cursor:pointer}
+.chip:hover{border-color:var(--pen)}
+
+/* games */
+.gamepick{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(170px,1fr))}
+.gamepick button{font:inherit;text-align:left;background:var(--card);color:var(--ink);border:2px solid var(--line);border-radius:14px;padding:12px;cursor:pointer;display:grid;gap:2px;box-shadow:var(--shadow)}
+.gamepick button b{font-family:var(--f-display);font-size:1.2rem}
+.gamepick button span{color:var(--muted);font-size:.9rem}
+.gamepick button[aria-pressed="true"]{border-color:var(--pen);background:var(--pen-soft)}
+.stage{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:18px;display:grid;gap:14px;min-height:260px}
+.stage .meta{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;color:var(--muted);font-weight:800}
+.big{font-family:var(--f-display);font-size:clamp(1.5rem,5vw,2.2rem);font-weight:800;line-height:1.2}
+.opts{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}
+.opt{font:inherit;font-size:1.15rem;font-weight:800;padding:14px 10px;border-radius:14px;border:2px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--pen)}
+.opt.ok{border-color:var(--ok);background:var(--ok);color:var(--card)}
+.opt.no{border-color:var(--bad);color:var(--bad);text-decoration:line-through}
+.opt:disabled{cursor:default}
+.feedback{font-family:var(--f-hand);font-size:1.35rem;min-height:1.6em}
+.feedback.ok{color:var(--ok)} .feedback.no{color:var(--bad)}
+.blank{display:inline-block;min-width:3.2em;border-bottom:3px solid var(--pen);text-align:center;color:var(--pen)}
+
+.memory{display:grid;gap:8px;grid-template-columns:repeat(4,1fr)}
+@media (max-width:520px){.memory{grid-template-columns:repeat(3,1fr)}}
+.mcard{aspect-ratio:4/3;max-width:100%;perspective:600px;border:0;background:none;padding:0;cursor:pointer;font:inherit;color:var(--ink)}
+.mcard .in{position:relative;width:100%;height:100%;transition:transform .35s;transform-style:preserve-3d}
+.mcard.open .in,.mcard.done .in{transform:rotateY(180deg)}
+.mcard .f,.mcard .b{position:absolute;inset:0;border-radius:12px;display:grid;place-items:center;padding:6px;backface-visibility:hidden;-webkit-backface-visibility:hidden;text-align:center;font-weight:800;font-size:clamp(.8rem,2.6vw,1.05rem);line-height:1.2}
+.mcard .f{background:var(--pen);color:var(--paper);font-family:var(--f-display);font-size:1.8rem;background-image:linear-gradient(45deg,transparent 45%,rgba(255,255,255,.18) 45% 55%,transparent 55%);background-size:18px 18px}
+.mcard .b{background:var(--card);border:2px solid var(--line);transform:rotateY(180deg)}
+.mcard .b.de{border-color:var(--pen)}
+.mcard.done .b{border-color:var(--ok);background:var(--pen-soft)}
+
+.tiles{display:flex;flex-wrap:wrap;gap:8px;min-height:56px;padding:10px;border-radius:12px;border:2px dashed var(--line)}
+.tiles.answer{background:var(--paper);border-style:solid}
+.tile{font:inherit;font-weight:800;font-size:1.1rem;padding:8px 14px;border-radius:10px;border:2px solid var(--pen);background:var(--card);color:var(--pen);cursor:pointer}
+.tiles.answer .tile{background:var(--pen);color:var(--paper)}
+
+.gp{display:grid;gap:16px}
+.gp-group{display:grid;gap:8px}
+.gp-group h3{font-size:1.05rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-family:var(--f-body);font-weight:800}
+.stage{scroll-margin-top:70px}
+.typeform{display:flex;gap:10px;flex-wrap:wrap}
+.typeform input{flex:1 1 220px;min-width:0;font:inherit;font-size:1.3rem;font-weight:800;padding:10px 12px;border-radius:12px;border:2px solid var(--line);background:var(--paper);color:var(--ink)}
+.uml{display:flex;gap:6px;flex-wrap:wrap}
+.charcard{display:flex;gap:14px;align-items:center;background:var(--paper);border:2px solid var(--line);border-radius:14px;padding:12px;max-width:360px}
+.timerbar{height:12px;border-radius:999px;background:var(--pen-soft);overflow:hidden}
+.timerbar span{display:block;height:100%;width:100%;background:var(--pen);transition:width .1s linear}
+.sortboxes{display:grid;gap:10px;grid-template-columns:repeat(3,1fr)}
+.sbox{font:inherit;min-height:130px;border-radius:14px;border:3px solid currentColor;background:var(--card);cursor:pointer;display:flex;flex-direction:column;gap:6px;align-items:center;padding:10px 6px;min-width:0}
+.sbox b{font-family:var(--f-display);font-size:1.6rem}
+.sbox.der{color:var(--der)} .sbox.die{color:var(--die)} .sbox.das{color:var(--das)}
+.sbox .in{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;font-weight:800;font-size:.9rem}
+.sbox .in span{background:var(--paper);border-radius:6px;padding:1px 6px}
+.tile small{font-weight:600;opacity:.75}
+.tile.sel{background:var(--mark-bg);color:var(--mark-fg);border-color:var(--mark-fg)}
+.trow{display:grid;grid-template-columns:3.2em 1fr 1.5em;gap:8px;align-items:center;font-weight:800}
+.trow input{font:inherit;font-size:1.1rem;padding:6px 10px;border-radius:10px;border:2px solid var(--line);background:var(--paper);color:var(--ink);min-width:0}
+.mk{font-size:1.3rem;font-weight:800}
+.balloons{display:flex;gap:10px;flex-wrap:wrap;min-height:70px;align-items:flex-end}
+.bl{width:38px;height:48px;border-radius:50% 50% 48% 48%;background:hsl(var(--h) 75% 58%);position:relative;transition:transform .3s,opacity .3s}
+.bl::after{content:"";position:absolute;left:50%;top:100%;width:2px;height:20px;background:var(--muted)}
+.bl.pop{transform:scale(.2);opacity:.15}
+.wordline{letter-spacing:.2em;word-break:break-all}
+.keys{display:grid;gap:6px;grid-template-columns:repeat(auto-fill,minmax(42px,1fr))}
+.key{font:inherit;font-weight:800;font-size:1.1rem;padding:8px 0;border-radius:10px;border:2px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer}
+.key.hit{background:var(--ok);border-color:var(--ok);color:var(--card)}
+.key.miss{opacity:.35}
+@media (max-width:520px){.sortboxes{grid-template-columns:1fr}.sbox{min-height:80px}}
+.mod{display:grid;gap:10px;margin-bottom:22px}
+.mod h3{font-size:1.2rem;color:var(--pen)}
+.lgrid{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+.lcard{font:inherit;color:var(--ink);text-align:left;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-items:start;background:var(--card);border:2px solid var(--line);border-radius:14px;padding:12px;cursor:pointer;box-shadow:var(--shadow)}
+.lcard:hover{border-color:var(--pen)}
+.lcard .lnum{font-family:var(--f-display);font-weight:800;font-size:1.5rem;color:var(--pen);line-height:1;min-width:2.2em}
+.lcard .ltxt{display:grid;min-width:0}.lcard .ltxt b{font-family:var(--f-display);font-size:1.15rem;line-height:1.15}.lcard .ltxt span{color:var(--muted);font-size:.92rem}
+.lcard .lmeta{grid-column:1 / -1;display:grid;gap:4px}
+.lcard.now{border-color:var(--pen);background:var(--pen-soft)}
+.lcard.next{opacity:.8}
+.lcard.review{border-style:dashed}
+.pill{justify-self:start;background:var(--pen);color:var(--paper);border-radius:999px;padding:1px 10px;font-weight:800;font-size:.8rem}
+.pill.soft{background:var(--paper);color:var(--muted);border:1px solid var(--line)}
+.prog{height:8px;border-radius:999px;background:var(--paper);border:1px solid var(--line);overflow:hidden}
+.prog span{display:block;height:100%;background:var(--das)}
+.lcard small{color:var(--muted);font-weight:700}
+.lhead{display:grid;gap:6px}
+.eyebrow{font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;font-weight:800;color:var(--muted)}
+.goals{background:var(--card);border:2px dashed var(--line);border-radius:12px;padding:8px 14px;max-width:72ch}
+.lnav{margin-top:4px}
+.subtabs{display:flex;gap:6px;flex-wrap:wrap;border-bottom:2px solid var(--line);padding-bottom:8px}
+.subtabs button{font-family:var(--f-display);font-weight:600;font-size:1rem;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:4px 14px;cursor:pointer}
+.subtabs button[aria-selected="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+#lektion1 > .intro > h2{display:none}
+#lekcia{gap:16px}
+.swatch{width:140px;height:100px;max-width:100%;border-radius:14px;border:3px solid var(--line)}
+.clock{width:150px;height:150px;max-width:100%;flex:0 0 auto}
+.sortboxes{grid-template-columns:repeat(var(--n,3),1fr)}
+.sbox.cat{color:var(--pen)}
+@media (max-width:520px){.sortboxes{grid-template-columns:1fr}}
+.me select{margin-top:4px}
+.toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:10px 18px;border-radius:999px;font-weight:800;max-width:calc(100% - 32px);text-align:center;z-index:20}
+.warn{border-color:var(--die)}
+footer{margin-top:40px;color:var(--muted);font-size:.9rem}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+
+<style>[hidden]{display:none!important}body{margin:0}img{max-width:100%}</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>Mein Deutschheft</h1>
+      <p class="sub">Wir alle 1 · od Wir starten po Modul 4</p>
+    </div>
+    <div class="controls">
+      <button class="toggle" id="slowBtn" aria-pressed="false" title="Prehrávať pomalšie">
+        <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 5a7 7 0 0 0-7 7h2a5 5 0 1 1 5 5v2a7 7 0 0 0 0-14zm-1 3v5l4 2 .8-1.5-2.8-1.4V8z"/></svg>
+        Pomaly
+      </button>
+      <div class="stars" aria-live="polite" title="Tvoje hviezdičky">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.6 7.2.8-5.4 4.9 1.5 7.1L12 17.8 5.7 21.4l1.5-7.1L1.8 9.4 9 8.6z"/></svg>
+        <span id="starCount">0</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="note warn" id="voiceWarn" hidden>
+    <b>Nepočuješ nemčinu?</b> Tento prehliadač nemá nemecký hlas alebo nevie čítať nahlas. Najlepšie to funguje v Chrome alebo Edge, na iPade/iPhone v Safari. Skontroluj aj hlasitosť.
+  </div>
+
+  <div class="note warn" id="jsWarn"><b>Stránka sa nenačítala celá.</b> <span id="jsWarnMsg">Otvor ju priamo v prehliadači (Chrome alebo Safari), nie v náhľade súboru, v Messengeri či v e-maile.</span></div>
+  <nav class="tabs" aria-label="Kapitoly">
+    <div class="row" role="tablist" id="tabRow"></div>
+  </nav>
+
+  <!-- CESTA -->
+  <section class="panel" id="cesta" hidden>
+    <div class="intro">
+      <h2>Cesta učebnicou Wir alle 1</h2>
+      <p>Lekcie idú v rovnakom poradí ako v učebnici. Otvor lekciu, ktorú práve preberáte v škole, a v nej klikni na <b>Označiť: teraz sme tu</b>. Potom postupuj po kartách: Slovíčka → Vety → Gramatika → Cvičenia.</p>
+    </div>
+    <div id="path"></div>
+  </section>
+
+  <!-- LEKCIA -->
+  <section class="panel" id="lekcia" hidden>
+    <div class="lhead" id="lhead"></div>
+    <div class="subtabs" id="subtabs" role="tablist" aria-label="Časti lekcie"></div>
+    <div id="lhost"></div>
+    <div class="panel" id="lgen"></div>
+    <div class="stage" id="lstage" hidden></div>
+  </section>
+
+
+  <!-- POZDRAVY -->
+  <section class="panel" id="pozdravy" hidden>
+    <div class="intro">
+      <h2>Hallo! Pozdravy</h2>
+      <p>Klikni na kartičku a vypočuj si, ako to znie. Potom to povedz nahlas po nej. Keď je to pre teba rýchle, zapni hore <b>Pomaly</b>.</p>
+    </div>
+    <div>
+      <h3>Pozdravujeme sa</h3>
+      <div class="grid" id="gGreet"></div>
+    </div>
+    <div>
+      <h3>Ako sa máš?</h3>
+      <div class="grid" id="gHow"></div>
+    </div>
+    <div class="note"><b>Pozor na Tschüs!</b> Hovorí sa len pri odchode, ako naše „čau" na rozlúčku. Pri príchode povieš <i>Hallo!</i> Učiteľke v škole povieš <i>Guten Morgen!</i> alebo <i>Guten Tag!</i> a pri odchode <i>Auf Wiedersehen!</i></div>
+  </section>
+
+  <!-- ABECEDA -->
+  <section class="panel" id="abeceda" hidden>
+    <div class="intro">
+      <h2>Das Alphabet</h2>
+      <p>Klikni na písmeno: najprv zaznie, ako sa volá, potom slovo, ktoré sa ním začína. Červené písmená v slovenčine nemáme.</p>
+    </div>
+    <div class="abc" id="gAbc"></div>
+    <div class="note"><b>Hláskuj svoje meno!</b> V škole sa ťa môžu spýtať: <i>Wie schreibt man das?</i> (Ako sa to píše?) Skús si svoje meno vyhláskovať po nemecky, napríklad T–O–M–A–S = <span class="hand">te – o – em – a – es</span>.</div>
+    <div class="me" style="max-width:640px">
+      <label for="spellIn">Napíš meno a daj si ho vyhláskovať
+        <input id="spellIn" type="text" value="Lena" maxlength="20" autocomplete="off">
+      </label>
+      <div class="row"><button class="btn" id="spellBtn">Vyhláskuj</button><span class="hand" id="spellOut"></span></div>
+    </div>
+  </section>
+
+  <!-- CISLA -->
+  <section class="panel" id="cisla" hidden>
+    <div class="intro">
+      <h2>Die Zahlen 0–20</h2>
+      <p>Čísla 0–10 sú z úvodu, 11–20 z Lekcie 1. Zelené čísla sa skladajú: <b>drei + zehn = dreizehn</b> (tri + desať).</p>
+    </div>
+    <div class="nums" id="gNums"></div>
+    <div class="note"><b>Dve pasce:</b> <i>sechzehn</i> (16) stratí <b>s</b> zo slova <i>sechs</i> a <i>siebzehn</i> (17) stratí <b>en</b> zo slova <i>sieben</i>. A 11 a 12 sú výnimky: <i>elf, zwölf</i>.</div>
+  </section>
+
+  <!-- LEKTION 1 -->
+  <section class="panel" id="lektion1" hidden>
+    <div class="intro">
+      <h2>Lektion 1: Wer ist das?</h2>
+      <p>V tejto lekcii sa naučíš povedať, ako sa voláš, koľko máš rokov a kto je kto.</p>
+    </div>
+    <div>
+      <h3>Dôležité vety</h3>
+      <div class="grid" id="gL1"></div>
+    </div>
+    <div class="box" style="max-width:700px">
+      <h3>Rozhovor na ihrisku</h3>
+      <div class="row"><button class="btn" id="playDialog">Prehrať celý rozhovor</button><span class="hand">alebo klikaj po jednej bubline</span></div>
+      <div class="dialog" id="dialog"></div>
+    </div>
+    <div class="me">
+      <h3>Predstav sa ty!</h3>
+      <div class="row" style="align-items:end">
+        <label for="meName" style="flex:1 1 180px">Moje meno <input id="meName" type="text" value="Tomáš" maxlength="20" autocomplete="off"></label>
+        <label for="meAge" style="flex:0 1 140px">Vek <select id="meAge"></select></label>
+      </div>
+      <p class="out" id="meOut"></p>
+      <div class="row"><button class="btn" id="meSay">Vypočuť</button><span class="hand">Potom to povedz nahlas sám.</span></div>
+    </div>
+  </section>
+
+  <!-- GRAMATIKA -->
+  <section class="panel" id="gramatika" hidden>
+    <div class="intro">
+      <h2>Gramatika z Lekcie 1</h2>
+      <p>Každý tvar sa dá vypočuť. Červenou sú <b>koncovky</b>, tie si treba zapamätať.</p>
+    </div>
+    <div class="gram">
+      <div class="box">
+        <h3><span class="tag">Osobné zámená</span>ich, du, er, sie, es</h3>
+        <table><tbody>
+          <tr><td>ja</td><td class="v"><button class="tsay" data-de="ich">ich</button></td></tr>
+          <tr><td>ty</td><td class="v"><button class="tsay" data-de="du">du</button></td></tr>
+          <tr><td>on</td><td class="v"><button class="tsay" data-de="er">er</button></td></tr>
+          <tr><td>ona</td><td class="v"><button class="tsay" data-de="sie">sie</button></td></tr>
+          <tr><td>ono</td><td class="v"><button class="tsay" data-de="es">es</button></td></tr>
+        </tbody></table>
+        <p class="note">V slovenčine povieš len „Mám desať." Nemec musí vždy povedať <b>kto</b>: <i>Ich bin zehn.</i> Zámeno vo vete nikdy nevynechaj!</p>
+      </div>
+
+      <div class="box">
+        <h3><span class="tag">Sloveso byť</span>sein</h3>
+        <table><tbody>
+          <tr><td>ja som</td><td class="v"><button class="tsay" data-de="ich bin">ich <span class="end">bin</span></button></td></tr>
+          <tr><td>ty si</td><td class="v"><button class="tsay" data-de="du bist">du <span class="end">bist</span></button></td></tr>
+          <tr><td>on / ona / ono je</td><td class="v"><button class="tsay" data-de="er ist, sie ist, es ist">er / sie / es <span class="end">ist</span></button></td></tr>
+        </tbody></table>
+        <div class="ex">
+          <button class="tsay" data-de="Ich bin Lena.">Ich bin Lena. <span class="hand">– Som Lena.</span></button>
+          <button class="tsay" data-de="Du bist elf.">Du bist elf. <span class="hand">– Máš jedenásť.</span></button>
+          <button class="tsay" data-de="Das ist Felix.">Das ist Felix. <span class="hand">– To je Felix.</span></button>
+        </div>
+        <p class="note"><b>Pozor:</b> vek sa v nemčine „je", nie „má": <i>Ich <b>bin</b> zehn Jahre alt.</i> = doslova „Som desať rokov starý."</p>
+      </div>
+
+      <div class="box">
+        <h3><span class="tag">Sloveso volať sa</span>heißen</h3>
+        <table><tbody>
+          <tr><td>ja sa volám</td><td class="v"><button class="tsay" data-de="ich heiße">ich heiß<span class="end">e</span></button></td></tr>
+          <tr><td>ty sa voláš</td><td class="v"><button class="tsay" data-de="du heißt">du heiß<span class="end">t</span></button></td></tr>
+          <tr><td>on / ona sa volá</td><td class="v"><button class="tsay" data-de="er heißt, sie heißt">er / sie heiß<span class="end">t</span></button></td></tr>
+        </tbody></table>
+        <p>Toto je pravidlo pre väčšinu slovies: <b>ich → -e</b>, <b>du → -st</b>, <b>er/sie/es → -t</b>. Pri <i>heißen</i> je výnimka: <i>du heißt</i> (nie „heißst"), lebo ß už znie ako s.</p>
+        <p class="note">Po nemecky sa „nevolám sa", ale jednoducho <i>ich heiße</i>. Žiadne „sa" tam nie je.</p>
+      </div>
+
+      <div class="box">
+        <h3><span class="tag">Otázky</span>W-Fragen</h3>
+        <table><tbody>
+          <tr><td>Kto?</td><td class="v"><button class="tsay" data-de="Wer ist das?">Wer ist das?</button></td></tr>
+          <tr><td>Ako?</td><td class="v"><button class="tsay" data-de="Wie heißt du?">Wie heißt du?</button></td></tr>
+          <tr><td>Koľko rokov?</td><td class="v"><button class="tsay" data-de="Wie alt bist du?">Wie alt bist du?</button></td></tr>
+          <tr><td>Ako sa máš?</td><td class="v"><button class="tsay" data-de="Wie geht's?">Wie geht's?</button></td></tr>
+        </tbody></table>
+        <p><b>Pravidlo poradia:</b> 1. otázne slovo, 2. <span class="mark">sloveso</span>, 3. osoba.<br><i>Wie</i> · <span class="mark">heißt</span> · <i>du?</i></p>
+        <p class="note"><b>Wer</b> = kto (nie „kde"!). <b>Wie</b> = ako. Tieto dve si deti často pletú.</p>
+      </div>
+
+      <div class="box">
+        <h3><span class="tag">Členy</span>der, die, das → ein, eine</h3>
+        <p>Každé nemecké podstatné meno má svoj člen. Uč sa slová vždy aj s ním, v škole ich farbíme:</p>
+        <table><tbody>
+          <tr><td>mužský rod</td><td class="v"><button class="tsay" data-de="der Hund, ein Hund"><span class="der">der</span> Hund → <span class="der">ein</span> Hund</button></td></tr>
+          <tr><td>ženský rod</td><td class="v"><button class="tsay" data-de="die Katze, eine Katze"><span class="die">die</span> Katze → <span class="die">eine</span> Katze</button></td></tr>
+          <tr><td>stredný rod</td><td class="v"><button class="tsay" data-de="das Buch, ein Buch"><span class="das">das</span> Buch → <span class="das">ein</span> Buch</button></td></tr>
+        </tbody></table>
+        <p><b>ein / eine</b> = nejaký, jeden (neurčitý člen). <b>der / die / das</b> = ten konkrétny (určitý člen).</p>
+        <p class="note">Rod v nemčine nemusí sedieť so slovenčinou: <span class="das">das</span> Mädchen (dievča) je stredný rod, rovnako ako u nás „to dievča". Ale <span class="die">die</span> Sonne (slnko) je ženský!</p>
+      </div>
+
+      <div class="box">
+        <h3><span class="tag">Oslovenie</span>Frau, Herr</h3>
+        <div class="ex">
+          <button class="tsay" data-de="Guten Tag, Frau Lenz!">Guten Tag, Frau Lenz! <span class="hand">– Dobrý deň, pani Lenzová!</span></button>
+          <button class="tsay" data-de="Guten Morgen, Herr Lenz!">Guten Morgen, Herr Lenz! <span class="hand">– Dobré ráno, pán Lenz!</span></button>
+        </div>
+        <p class="note">Priezvisko sa v nemčine nemení: <i>Frau Lenz</i>, nie „Lenzová". A podstatné mená sa v nemčine <b>vždy píšu s veľkým písmenom</b>: der <b>H</b>und, die <b>K</b>atze.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- VYSLOVNOST -->
+  <section class="panel" id="vyslovnost" hidden>
+    <div class="intro">
+      <h2>Ako sa to číta?</h2>
+      <p>V nemčine sa veľa písmen číta inak ako v slovenčine. Klikni na slová a porovnaj.</p>
+    </div>
+    <div class="pron" id="gPron"></div>
+    <div class="box" style="max-width:720px">
+      <h3>Dlhé a krátke samohlásky</h3>
+      <p>Toto je výslovnosť z Lekcie 1. Nemecké samohlásky nemajú dĺžne, ale dá sa to poznať:</p>
+      <p><b>Dlhá</b>, keď za ňou je <b>h</b>, zdvojená samohláska alebo len jedna spoluhláska: <i>zehn, Tag, Name</i>.<br>
+         <b>Krátka</b>, keď za ňou sú dve spoluhlásky: <i>acht, elf, Mann, bitte</i>.</p>
+      <div class="chips" id="longShort"></div>
+    </div>
+  </section>
+
+  <!-- HRY -->
+  <section class="panel" id="hry" hidden>
+    <div class="intro">
+      <h2>Spielen wir! Hráme sa</h2>
+      <p>Za každú správnu odpoveď dostaneš hviezdičku. Vyber si hru:</p>
+    </div>
+    <div class="me" style="max-width:none"><label for="hrySel">Slovíčka v hrách Počúvaj, Pexeso, Diktát a Balóny berieme z lekcie:<select id="hrySel"></select></label></div>
+    <div class="gp" id="gamePick"><div class="gp-group"><h3>Počúvanie</h3><div class="gamepick"><button data-g="listen" aria-pressed="true"><b>Počúvaj</b><span>Vypočuj si slovo a nájdi, čo znamená</span></button><button data-g="numbers" aria-pressed="false"><b>Čísla</b><span>Počuješ číslo, klikni na správne</span></button><button data-g="letters" aria-pressed="false"><b>Písmenká</b><span>Ktoré písmeno počuješ?</span></button><button data-g="dictation" aria-pressed="false"><b>Diktát</b><span>Počuješ slovo a napíšeš ho</span></button><button data-g="truefalse" aria-pressed="false"><b>Richtig oder falsch?</b><span>Platí veta o kamarátovi?</span></button><button data-g="reply" aria-pressed="false"><b>Čo odpovieš?</b><span>Vyber odpoveď na otázku</span></button></div></div><div class="gp-group"><h3>Gramatika</h3><div class="gamepick"><button data-g="verb" aria-pressed="false"><b>bin, bist, ist?</b><span>Doplň správny tvar slovesa</span></button><button data-g="table" aria-pressed="false"><b>Doplň tabuľku</b><span>Napíš tvary sein a heißen</span></button><button data-g="pronoun" aria-pressed="false"><b>er, sie alebo es?</b><span>On, ona, alebo ono?</span></button><button data-g="article" aria-pressed="false"><b>ein alebo eine?</b><span>Vyber správny člen</span></button><button data-g="sort" aria-pressed="false"><b>der, die, das</b><span>Roztrieď slová do krabíc</span></button><button data-g="sentence" aria-pressed="false"><b>Poskladaj vetu</b><span>Dej slová do správneho poradia</span></button></div></div><div class="gp-group"><h3>Slovíčka a písanie</h3><div class="gamepick"><button data-g="memory" aria-pressed="false"><b>Pexeso</b><span>Nemecké a slovenské dvojice</span></button><button data-g="balloons" aria-pressed="false"><b>Balóny</b><span>Uhádni slovo po písmenkách</span></button><button data-g="situation" aria-pressed="false"><b>Čo povieš?</b><span>Ktorý pozdrav sa hodí</span></button><button data-g="math" aria-pressed="false"><b>Počítaj</b><span>plus a minus po nemecky</span></button><button data-g="speed" aria-pressed="false"><b>Blesk</b><span>Koľko čísel stihneš za minútu?</span></button><button data-g="writenum" aria-pressed="false"><b>Napíš číslo</b><span>Číslo napíš slovom</span></button><button data-g="translate" aria-pressed="false"><b>Prelož</b><span>Napíš vetu po nemecky</span></button></div></div></div>
+    <div class="stage" id="stage"></div>
+  </section>
+
+  <footer>Obsah podľa učebnice Wir alle 1 (Wir starten a Moduly 1–4, v poradí lekcií). Vety a cvičenia sú vlastné, nie prepis z učebnice. Hlas zabezpečuje prehliadač, preto môže znieť v každom zariadení trochu inak.</footer>
+</div>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>window.onerror=function(m){var w=document.getElementById("jsWarn"),t=document.getElementById("jsWarnMsg");if(w){w.hidden=false;}if(t){t.textContent="Chyba: "+m+" – pošli túto správu rodičom.";}};</script>
+<script>
+(function() {
+  "use strict";
+  var _a;
+  document.getElementById("jsWarn").hidden = true;
+  const $ = (s, r = document) => r.querySelector(s);
+  const SPK = '<span class="spk" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 8v8a4.5 4.5 0 0 0 2.5-4z"/></svg></span>';
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+  const shuffle = (a) => {
+    a = a.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  };
+  const pick = (a, n) => shuffle(a).slice(0, n);
+  let slow = false, deVoice = null;
+  const hasTTS = "speechSynthesis" in window && typeof SpeechSynthesisUtterance !== "undefined";
+  function chooseVoice() {
+    if (!hasTTS) return;
+    const vs = speechSynthesis.getVoices().filter((v) => /^de([-_]|$)/i.test(v.lang));
+    if (!vs.length) {
+      deVoice = null;
+      return;
+    }
+    const pref = vs.filter((v) => /de[-_]DE/i.test(v.lang));
+    const pool = pref.length ? pref : vs;
+    deVoice = pool.find((v) => /Google|Anna|Katja|Hedda|Petra|Helena|Marlene|Vicki/i.test(v.name)) || pool[0];
+  }
+  if (hasTTS) {
+    chooseVoice();
+    (_a = speechSynthesis.addEventListener) == null ? void 0 : _a.call(speechSynthesis, "voiceschanged", chooseVoice);
+  }
+  setTimeout(() => {
+    if (!hasTTS || speechSynthesis.getVoices().length && !deVoice) $("#voiceWarn").hidden = false;
+  }, 2500);
+  function utter(t) {
+    const u = new SpeechSynthesisUtterance(t);
+    u.lang = "de-DE";
+    if (deVoice) u.voice = deVoice;
+    u.rate = slow ? 0.6 : 0.88;
+    u.pitch = 1.05;
+    return u;
+  }
+  function speak(t, el) {
+    if (!hasTTS) {
+      $("#voiceWarn").hidden = false;
+      return;
+    }
+    speechSynthesis.cancel();
+    const u = utter(t);
+    if (el) {
+      document.querySelectorAll(".playing").forEach((x) => x.classList.remove("playing"));
+      el.classList.add("playing");
+      u.onend = u.onerror = () => el.classList.remove("playing");
+    }
+    speechSynthesis.speak(u);
+  }
+  function speakSeq(items) {
+    if (!hasTTS) {
+      $("#voiceWarn").hidden = false;
+      return;
+    }
+    speechSynthesis.cancel();
+    items.forEach((it) => {
+      const u = utter(it.t);
+      if (it.el) {
+        u.onstart = () => it.el.classList.add("playing");
+        u.onend = u.onerror = () => it.el.classList.remove("playing");
+      }
+      speechSynthesis.speak(u);
+    });
+  }
+  $("#slowBtn").addEventListener("click", (e) => {
+    slow = !slow;
+    e.currentTarget.setAttribute("aria-pressed", slow);
+    toast(slow ? "Hovor\xEDm pomaly" : "Hovor\xEDm norm\xE1lne");
+  });
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-de]");
+    if (b && !b.closest("#stage")) speak(b.dataset.de, b.classList.contains("say") ? b : null);
+  });
+  let stars = 0;
+  try {
+    stars = parseInt(localStorage.getItem("dh-stars") || "0", 10) || 0;
+  } catch (e) {
+  }
+  function addStar(n = 1) {
+    stars += n;
+    $("#starCount").textContent = stars;
+    try {
+      localStorage.setItem("dh-stars", stars);
+    } catch (e) {
+    }
+  }
+  $("#starCount").textContent = stars;
+  let tt;
+  function toast(m) {
+    const t = $("#toast");
+    t.textContent = m;
+    t.hidden = false;
+    clearTimeout(tt);
+    tt = setTimeout(() => t.hidden = true, 1600);
+  }
+  const GREET = [
+    ["Hallo!", "Ahoj!", "pri stretnut\xED"],
+    ["Guten Morgen!", "Dobr\xE9 r\xE1no!", "r\xE1no, aj v \u0161kole"],
+    ["Guten Tag!", "Dobr\xFD de\u0148!", ""],
+    ["Guten Abend!", "Dobr\xFD ve\u010Der!", ""],
+    ["Gute Nacht!", "Dobr\xFA noc!", "pred span\xEDm"],
+    ["Tsch\xFCs!", "\u010Cau! / Ahoj!", "len pri odchode"],
+    ["Auf Wiedersehen!", "Dovidenia!", "dospel\xFDm, u\u010Dite\u013Eke"],
+    ["Bis morgen!", "Do zajtra!", ""],
+    ["Danke!", "\u010Eakujem!", ""],
+    ["Bitte!", "Pros\xEDm!", ""]
+  ];
+  const HOW = [
+    ["Wie geht's?", "Ako sa m\xE1\u0161?", ""],
+    ["Wie geht es dir?", "Ako sa m\xE1\u0161? (cel\xE1 veta)", ""],
+    ["Super!", "Super!", ""],
+    ["Gut, danke.", "Dobre, \u010Fakujem.", ""],
+    ["Es geht.", "Ujde to.", ""],
+    ["Nicht so gut.", "Nie ve\u013Emi dobre.", ""],
+    ["Und dir?", "A ty?", "ke\u010F sa sp\xFDta\u0161 sp\xE4\u0165"]
+  ];
+  const L1 = [
+    ["Wie hei\xDFt du?", "Ako sa vol\xE1\u0161?", ""],
+    ["Ich hei\xDFe Tom\xE1\u0161.", "Vol\xE1m sa Tom\xE1\u0161.", ""],
+    ["Wer ist das?", "Kto je to?", ""],
+    ["Das ist Lena.", "To je Lena.", ""],
+    ["Wie hei\xDFt er?", "Ako sa vol\xE1 (on)?", ""],
+    ["Er hei\xDFt Felix.", "Vol\xE1 sa Felix.", ""],
+    ["Wie hei\xDFt sie?", "Ako sa vol\xE1 (ona)?", ""],
+    ["Sie hei\xDFt Sofia.", "Vol\xE1 sa Sofia.", ""],
+    ["Wie alt bist du?", "Ko\u013Eko m\xE1\u0161 rokov?", ""],
+    ["Ich bin zehn Jahre alt.", "M\xE1m desa\u0165 rokov.", "doslova: som 10 rokov star\xFD"],
+    ["Ich bin elf.", "M\xE1m jeden\xE1s\u0165.", "kr\xE1tko"],
+    ["Und du?", "A ty?", ""],
+    ["Das ist ein Hund.", "To je pes.", ""],
+    ["Das ist eine Katze.", "To je ma\u010Dka.", ""],
+    ["Frau Lenz", "pani Lenzov\xE1", ""],
+    ["Herr Lenz", "p\xE1n Lenz", ""]
+  ];
+  const ABC = [
+    ["A", "a", "Apfel", "jablko"],
+    ["B", "be", "Ball", "lopta"],
+    ["C", "ce", "Computer", "po\u010D\xEDta\u010D", "[ce]"],
+    ["D", "de", "Delfin", "delf\xEDn"],
+    ["E", "e", "Elefant", "slon"],
+    ["F", "ef", "Fisch", "ryba"],
+    ["G", "ge", "Giraffe", "\u017Eirafa"],
+    ["H", "ha", "Hund", "pes"],
+    ["I", "i", "Igel", "je\u017Eko"],
+    ["J", "jot", "Junge", "chlapec"],
+    ["K", "ka", "Katze", "ma\u010Dka"],
+    ["L", "el", "Lampe", "lampa"],
+    ["M", "em", "Maus", "my\u0161"],
+    ["N", "en", "Nase", "nos"],
+    ["O", "o", "Oma", "babka"],
+    ["P", "pe", "Papa", "ocko"],
+    ["Q", "ku", "Qualle", "med\xFAza"],
+    ["R", "er", "Radio", "r\xE1dio"],
+    ["S", "es", "Sonne", "slnko"],
+    ["T", "te", "Tisch", "st\xF4l"],
+    ["U", "u", "Uhr", "hodiny"],
+    ["V", "fau", "Vogel", "vt\xE1k"],
+    ["W", "we", "Wasser", "voda"],
+    ["X", "ix", "Xylofon", "xylof\xF3n"],
+    ["Y", "ypsilon", "Yoga", "joga"],
+    ["Z", "cet", "Zebra", "zebra"],
+    ["\xC4", "\xE4", "\xC4pfel", "jablk\xE1", 1],
+    ["\xD6", "\xF6", "\xD6l", "olej", 1],
+    ["\xDC", "\xFC", "\xDCbung", "cvi\u010Denie", 1],
+    ["\xDF", "es-cet", "Fu\xDF", "noha", 1]
+  ];
+  const ABC_TTS = { A: "A", B: "Be", C: "Ce", D: "De", E: "E", F: "Ef", G: "Ge", H: "Ha", I: "I", J: "Jot", K: "Ka", L: "El", M: "Em", N: "En", O: "O", P: "Pe", Q: "Ku", R: "Er", S: "Es", T: "Te", U: "U", V: "Vau", W: "We", X: "Ix", Y: "Ypsilon", Z: "Zett", "\xC4": "\xC4", "\xD6": "\xD6", "\xDC": "\xDC", "\xDF": "Eszett" };
+  const NUM = ["null", "eins", "zwei", "drei", "vier", "f\xFCnf", "sechs", "sieben", "acht", "neun", "zehn", "elf", "zw\xF6lf", "dreizehn", "vierzehn", "f\xFCnfzehn", "sechzehn", "siebzehn", "achtzehn", "neunzehn", "zwanzig"];
+  const PRON = [
+    ["ei", "[aj]", ["nein", "drei", "hei\xDFen", "zwei"], 'ako \u201Eaj"'],
+    ["ie", "[\xED]", ["vier", "sieben", "Sie", "wie"], "dlh\xE9 \xED"],
+    ["eu", "[oj]", ["neun", "heute", "Freund"], 'ako \u201Eoj"'],
+    ["sch", "[\u0161]", ["Schule", "Tsch\xFCs", "Fisch"], 'jedno \u201E\u0161"'],
+    ["z", "[c]", ["zehn", "zwei", "zw\xF6lf", "Zebra"], 'v\u017Edy ako \u201Ec"'],
+    ["w", "[v]", ["wie", "wer", "Wasser"], 'ako na\u0161e \u201Ev"'],
+    ["v", "[f]", ["vier", "Vogel", "Vater"], 'v\xE4\u010D\u0161inou ako \u201Ef"'],
+    ["s", "[z]", ["sieben", "sechs", "Sonne"], 'pred samohl\xE1skou ako \u201Ez"'],
+    ["st / sp", "[\u0161t / \u0161p]", ["Stift", "spielen", "Stra\xDFe"], "na za\u010Diatku slova"],
+    ["\xDF", "[s]", ["hei\xDFen", "Fu\xDF", "Stra\xDFe"], 'ostr\xE9 \u201Es"'],
+    ["ch", "[ch]", ["acht", "Buch", "ich", "sechzehn"], "po a, o, u tvrd\xE9; inde m\xE4kk\xE9 ako \u0161epot"],
+    ["h", "d\u013A\u017Ee\u0148", ["zehn", "Uhr", "Kuh"], "po samohl\xE1ske sa ne\u010D\xEDta, len ju pred\u013A\u017Ei"],
+    ["\xE4", "[e]", ["M\xE4dchen", "\xC4pfel"], 'ako \u201Ee"'],
+    ["\xF6", "[\xF6]", ["\xD6l", "h\xF6ren", "zw\xF6lf"], 'povedz \u201Ee" s \xFAstami ako na \u201Eo"'],
+    ["\xFC", "[\xFC]", ["Tsch\xFCs", "f\xFCnf", "\xDCbung"], 'povedz \u201Ei" s \xFAstami ako na \u201Eu"']
+  ];
+  const LONGSHORT = ["zehn", "Tag", "Name", "wie", "gut", "Uhr", "acht", "elf", "Mann", "bitte", "Hund", "Katze"];
+  const NOUNS = [
+    ["Hund", "pes", "der"],
+    ["Katze", "ma\u010Dka", "die"],
+    ["Buch", "kniha", "das"],
+    ["Junge", "chlapec", "der"],
+    ["M\xE4dchen", "diev\u010Da", "das"],
+    ["Frau", "\u017Eena, pani", "die"],
+    ["Mann", "mu\u017E", "der"],
+    ["Ball", "lopta", "der"],
+    ["Maus", "my\u0161", "die"],
+    ["Haus", "dom", "das"],
+    ["Freund", "kamar\xE1t", "der"],
+    ["Freundin", "kamar\xE1tka", "die"],
+    ["Heft", "zo\u0161it", "das"],
+    ["Schule", "\u0161kola", "die"],
+    ["Lehrer", "u\u010Dite\u013E", "der"],
+    ["Lehrerin", "u\u010Dite\u013Eka", "die"],
+    ["Fisch", "ryba", "der"],
+    ["Sonne", "slnko", "die"],
+    ["Auto", "auto", "das"],
+    ["Apfel", "jablko", "der"]
+  ];
+  const VERBS = [
+    ["Ich ___ zehn Jahre alt.", ["bin", "bist", "ist"], "bin", "M\xE1m desa\u0165 rokov."],
+    ["Du ___ elf.", ["bin", "bist", "ist"], "bist", "M\xE1\u0161 jeden\xE1s\u0165."],
+    ["Das ___ Felix.", ["bin", "bist", "ist"], "ist", "To je Felix."],
+    ["Wer ___ das?", ["bin", "bist", "ist"], "ist", "Kto je to?"],
+    ["Wie alt ___ du?", ["bin", "bist", "ist"], "bist", "Ko\u013Eko m\xE1\u0161 rokov?"],
+    ["Sie ___ zw\xF6lf.", ["bin", "bist", "ist"], "ist", "Ona m\xE1 dvan\xE1s\u0165."],
+    ["Ich ___ Lena.", ["bin", "bist", "ist"], "bin", "Som Lena."],
+    ["Er ___ neun Jahre alt.", ["bin", "bist", "ist"], "ist", "On m\xE1 dev\xE4\u0165 rokov."],
+    ["Ich ___ Tom\xE1\u0161.", ["hei\xDFe", "hei\xDFt"], "hei\xDFe", "Vol\xE1m sa Tom\xE1\u0161."],
+    ["Wie ___ du?", ["hei\xDFe", "hei\xDFt"], "hei\xDFt", "Ako sa vol\xE1\u0161?"],
+    ["Er ___ Felix.", ["hei\xDFe", "hei\xDFt"], "hei\xDFt", "Vol\xE1 sa Felix."],
+    ["Wie ___ sie?", ["hei\xDFe", "hei\xDFt"], "hei\xDFt", "Ako sa vol\xE1?"],
+    ["___ hei\xDFe Sofia.", ["Ich", "Du", "Er"], "Ich", "Vol\xE1m sa Sofia."],
+    ["___ bist zehn.", ["Ich", "Du", "Sie"], "Du", "M\xE1\u0161 desa\u0165."],
+    ["___ ist das? \u2013 Das ist Lena.", ["Wer", "Wie"], "Wer", "Kto je to? \u2013 To je Lena."],
+    ["___ hei\xDFt du?", ["Wer", "Wie"], "Wie", "Ako sa vol\xE1\u0161?"]
+  ];
+  const SENT = [
+    ["Wie hei\xDFt du?", "Ako sa vol\xE1\u0161?"],
+    ["Ich hei\xDFe Lena.", "Vol\xE1m sa Lena."],
+    ["Wer ist das?", "Kto je to?"],
+    ["Das ist Herr Lenz.", "To je p\xE1n Lenz."],
+    ["Wie alt bist du?", "Ko\u013Eko m\xE1\u0161 rokov?"],
+    ["Ich bin elf Jahre alt.", "M\xE1m jeden\xE1s\u0165 rokov."],
+    ["Das ist eine Katze.", "To je ma\u010Dka."],
+    ["Er hei\xDFt Felix.", "Vol\xE1 sa Felix."],
+    ["Wie geht es dir?", "Ako sa m\xE1\u0161?"],
+    ["Guten Morgen, Frau Lenz!", "Dobr\xE9 r\xE1no, pani Lenzov\xE1!"],
+    ["Sie ist zehn Jahre alt.", "Ona m\xE1 desa\u0165 rokov."]
+  ];
+  const DIALOG = [
+    ["F", "Hallo! Ich hei\xDFe Felix. Und du? Wie hei\xDFt du?", "Ahoj! Vol\xE1m sa Felix. A ty? Ako sa vol\xE1\u0161?"],
+    ["L", "Hallo, Felix! Ich hei\xDFe Lena.", "Ahoj, Felix! Vol\xE1m sa Lena."],
+    ["F", "Wie alt bist du, Lena?", "Ko\u013Eko m\xE1\u0161 rokov, Lena?"],
+    ["L", "Ich bin zehn. Und du?", "M\xE1m desa\u0165. A ty?"],
+    ["F", "Ich bin elf. Wer ist das?", "M\xE1m jeden\xE1s\u0165. Kto je to?"],
+    ["L", "Das ist Sofia. Sie ist auch zehn.", "To je Sofia. Aj ona m\xE1 desa\u0165."],
+    ["F", "Und wer ist das?", "A kto je toto?"],
+    ["L", "Das ist ein Hund! Er hei\xDFt Bello.", "To je pes! Vol\xE1 sa Bello."],
+    ["F", "Tsch\xFCs, Lena!", "\u010Cau, Lena!"],
+    ["L", "Tsch\xFCs, Felix! Bis morgen!", "\u010Cau, Felix! Do zajtra!"]
+  ];
+  const card = ([de, sk, tip]) => '<button class="say" data-de="'.concat(esc(de), '">').concat(SPK, '<span class="txt"><span class="de">').concat(esc(de), '</span><span class="sk">').concat(esc(sk), "</span>").concat(tip ? '<span class="tip">'.concat(esc(tip), "</span>") : "", "</span></button>");
+  $("#gGreet").innerHTML = GREET.map(card).join("");
+  $("#gHow").innerHTML = HOW.map(card).join("");
+  $("#gL1").innerHTML = L1.map(card).join("");
+  $("#gAbc").innerHTML = ABC.map(([L, n, w, sk, sp]) => '<button class="say'.concat(sp === 1 ? " special" : "", '" data-de="').concat(esc(ABC_TTS[L] + ". " + w), '" aria-label="').concat(L, ", ").concat(w, '"><span class="L">').concat(L, '</span><span class="n">').concat(n, '</span><span class="w">').concat(w, "</span></button>")).join("");
+  $("#gNums").innerHTML = NUM.map((w, i) => '<button class="say'.concat(i >= 13 && i <= 19 ? " teen" : "", '" data-de="').concat(w, '"><span class="d">').concat(i, '</span><span class="de">').concat(w, "</span></button>")).join("");
+  $("#gPron").innerHTML = PRON.map(([g, as, ws, tip]) => '<div class="box"><div class="rule"><span class="g">'.concat(g, '</span><span class="as">').concat(as, '</span></div><p class="sk" style="color:var(--muted)">').concat(tip, '</p><div class="chips">').concat(ws.map((w) => '<button class="chip" data-de="'.concat(w, '">').concat(w, "</button>")).join(""), "</div></div>")).join("");
+  $("#longShort").innerHTML = LONGSHORT.map((w, i) => '<button class="chip" data-de="'.concat(w, '" style="border-color:').concat(i < 6 ? "var(--das)" : "var(--die)", '">').concat(w, " \xB7 ").concat(i < 6 ? "dlh\xE1" : "kr\xE1tka", "</button>")).join("");
+  $("#dialog").innerHTML = DIALOG.map(([w, de, sk]) => '<div class="bubble'.concat(w === "L" ? " r" : "", '"><span class="who ').concat(w === "F" ? "f" : "l", '" aria-hidden="true">').concat(w, '</span><button class="say" data-de="').concat(esc(de), '">').concat(SPK, '<span class="txt"><span class="de">').concat(esc(de), '</span><span class="sk">').concat(esc(sk), "</span></span></button></div>")).join("");
+  $("#playDialog").addEventListener("click", () => speakSeq([...document.querySelectorAll("#dialog .say")].map((el) => ({ t: el.dataset.de, el }))));
+  function spellWord(w) {
+    return [...w.trim()].map((ch) => {
+      const u = ch.toUpperCase();
+      const base = u.normalize("NFD").replace(/[̀-ͯ]/g, "");
+      const key = ABC_TTS[u] ? u : ch === "\xDF" ? "\xDF" : base;
+      return ABC_TTS[key] ? { t: ABC_TTS[key], n: (ABC.find((a) => a[0] === key) || [])[1] } : null;
+    }).filter(Boolean);
+  }
+  $("#spellBtn").addEventListener("click", () => {
+    const s = spellWord($("#spellIn").value);
+    if (!s.length) return;
+    $("#spellOut").textContent = s.map((x) => x.n).join(" \u2013 ");
+    speakSeq(s.map((x) => ({ t: x.t })));
+  });
+  $("#meAge").innerHTML = NUM.slice(6, 16).map((w, i) => '<option value="'.concat(i + 6, '"').concat(i + 6 === 10 ? " selected" : "", ">").concat(i + 6, " \u2013 ").concat(w, "</option>")).join("");
+  function meText() {
+    const n = $("#meName").value.trim() || "\u2026";
+    const a = NUM[+$("#meAge").value];
+    return "Hallo! Ich hei\xDFe ".concat(n, ". Ich bin ").concat(a, " Jahre alt.");
+  }
+  function meUpd() {
+    $("#meOut").textContent = meText();
+  }
+  ["input", "change"].forEach((ev) => {
+    $("#meName").addEventListener(ev, meUpd);
+    $("#meAge").addEventListener(ev, meUpd);
+  });
+  meUpd();
+  $("#meSay").addEventListener("click", () => speak(meText()));
+  let stage = $("#stage");
+  let curGame = "listen";
+  let lessonCtx = null;
+  $("#gamePick").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-g]");
+    if (!b) return;
+    curGame = b.dataset.g;
+    document.querySelectorAll("#gamePick button").forEach((x) => x.setAttribute("aria-pressed", x === b));
+    if (hasTTS) speechSynthesis.cancel();
+    startGame(curGame);
+    stage.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+  const GAMES = { listen: () => gListen(), numbers: () => gNumbers(), letters: () => gLetters(), verb: () => gVerb(), article: () => gArticle(), sentence: () => gSentence(), memory: () => gMemory(), dictation: () => gDictation(), truefalse: () => gTrueFalse(), reply: () => gReply(), table: () => gTable(), pronoun: () => gPronoun(), sort: () => gSort(), balloons: () => gBalloons(), situation: () => gSituation(), math: () => gMath(), speed: () => gSpeed(), writenum: () => gWriteNum(), translate: () => gTranslate() };
+  function startGame(g) {
+    lessonCtx = null;
+    stage = $("#stage");
+    const ls = $("#lstage");
+    if (ls) {
+      ls.innerHTML = "";
+      ls.hidden = true;
+    }
+    const P = hryPool();
+    if (g === "listen") return gListen(P);
+    if (g === "memory") return gMemory(P.map((x) => [x.de, x.sk]));
+    if (g === "dictation") return gDictation(P.map((x) => x.de));
+    if (g === "balloons") return gBalloons(P.map((x) => x.de));
+    GAMES[g]();
+  }
+  function endScreen(score, total, again) {
+    const msg = score === total ? "Perfekt! Super gemacht!" : score >= total * 0.7 ? "Sehr gut! Ve\u013Emi dobre!" : "Gut! Sk\xFAs to e\u0161te raz.";
+    stage.innerHTML = '<div class="big">'.concat(msg, '</div><p class="hand">Spr\xE1vne: ').concat(score, " z ").concat(total, '</p><div class="row"><button class="btn" id="again">Hra\u0165 znova</button></div>');
+    const ctx = lessonCtx;
+    const ag = ctx ? ctx.again : again;
+    $("#again").onclick = () => ag();
+    speak(msg.split("!")[0] + "!");
+    if (ctx && ctx.lid && ctx.idx >= 0) {
+      markDone(ctx.lid, ctx.idx);
+      const lb = document.querySelector('#lgen [data-ex="'.concat(ctx.idx, '"] b'));
+      if (lb && !lb.textContent.startsWith("\u2713")) lb.textContent = "\u2713 " + lb.textContent;
+      const L = LBY[ctx.lid], nx = L.ex[ctx.idx + 1];
+      if (nx) {
+        $("#again").insertAdjacentHTML("afterend", '<button class="btn ghost" id="nextEx">\u010Eal\u0161ie: '.concat(esc(nx.title), " \u2192</button>"));
+        $("#nextEx").onclick = () => {
+          document.querySelectorAll("#lgen [data-ex]").forEach((x) => x.setAttribute("aria-pressed", x.dataset.ex == String(ctx.idx + 1)));
+          runEx(L, nx, ctx.idx + 1);
+        };
+      } else {
+        const ni = LESSONS.indexOf(L) + 1;
+        if (LESSONS[ni]) $("#again").insertAdjacentHTML("afterend", '<p class="hand">V\u0161etky cvi\u010Denia lekcie s\xFA hotov\xE9. \u010Eal\u0161ia lekcia: '.concat(esc(LESSONS[ni].code + " " + LESSONS[ni].title), ".</p>"));
+      }
+    }
+  }
+  function mcGame({ rounds, title, render, after }) {
+    let i = 0, score = 0;
+    function next() {
+      if (i >= rounds.length) return endScreen(score, rounds.length, () => startGame(curGame));
+      const r = rounds[i];
+      stage.innerHTML = '<div class="meta"><span>'.concat(title, "</span><span>").concat(i + 1, " / ").concat(rounds.length, " \xB7 spr\xE1vne ").concat(score, "</span></div>").concat(render(r), '<div class="opts">').concat(r.opts.map((o) => '<button class="opt" data-o="'.concat(esc(o), '">').concat(esc(o), "</button>")).join(""), '</div><div class="feedback" id="fb"></div>');
+      const rp = $("#replay", stage);
+      if (rp) rp.onclick = () => speak(r.audio);
+      if (r.audio) setTimeout(() => speak(r.audio), 250);
+      stage.querySelectorAll(".opt").forEach((b) => b.onclick = () => {
+        const ok = b.dataset.o === r.a;
+        const fb = $("#fb");
+        if (ok) {
+          b.classList.add("ok");
+          stage.querySelectorAll(".opt").forEach((x) => x.disabled = true);
+          if (!r.missed) {
+            score++;
+            addStar();
+          }
+          fb.className = "feedback ok";
+          fb.textContent = (after ? after(r) : "") || "Richtig! Spr\xE1vne!";
+          if (r.sayAfter) speak(r.sayAfter);
+          i++;
+          setTimeout(next, r.sayAfter ? 1900 : 1100);
+        } else {
+          b.classList.add("no");
+          b.disabled = true;
+          r.missed = true;
+          fb.className = "feedback no";
+          fb.textContent = "Nicht ganz\u2026 sk\xFAs e\u0161te!";
+        }
+      });
+    }
+    next();
+  }
+  const LISTEN_POOL = [...GREET, ...HOW.filter((h) => h[0] !== "Super!"), ...L1.filter((l) => !/Tomáš|Lena|Felix|Sofia/.test(l[0]))].map(([de, sk]) => ({ de, sk }));
+  const replayBtn = '<div class="row"><button class="btn" id="replay">Vypo\u010Du\u0165 znova</button></div>';
+  function gListen(pool) {
+    pool = pool || LISTEN_POOL;
+    const rounds = pick(pool, 8).map((t) => {
+      const others = pick(pool.filter((x) => x.sk !== t.sk), 3).map((x) => x.sk);
+      return { audio: t.de, a: t.sk, opts: shuffle([t.sk, ...others]), de: t.de };
+    });
+    mcGame({ rounds, title: "Po\u010D\xFAvaj a vyber v\xFDznam", render: () => '<div class="big">\u010Co po\u010Duje\u0161?</div>'.concat(replayBtn), after: (r) => "Richtig! \u201E".concat(r.de, '"') });
+  }
+  function gNumbers() {
+    const rounds = pick([...Array(21).keys()], 10).map((n) => {
+      const near = shuffle([...Array(21).keys()].filter((x) => x !== n).sort((a, b) => Math.abs(a - n) - Math.abs(b - n)).slice(0, 6)).slice(0, 3);
+      return { audio: NUM[n], a: String(n), opts: shuffle([n, ...near]).map(String), w: NUM[n] };
+    });
+    mcGame({ rounds, title: "Ak\xE9 \u010D\xEDslo po\u010Duje\u0161?", render: () => '<div class="big">Welche Zahl?</div>'.concat(replayBtn), after: (r) => "Richtig! ".concat(r.a, " = ").concat(r.w) });
+  }
+  function gLetters() {
+    const L = ABC.map((a) => a[0]);
+    const rounds = pick(L, 10).map((l) => ({ audio: ABC_TTS[l], a: l, opts: shuffle([l, ...pick(L.filter((x) => x !== l), 3)]) }));
+    mcGame({ rounds, title: "Ktor\xE9 p\xEDsmeno po\u010Duje\u0161?", render: () => '<div class="big">Welcher Buchstabe?</div>'.concat(replayBtn), after: (r) => "Richtig! ".concat(r.a, " sa povie \u201E").concat(ABC.find((a) => a[0] === r.a)[1], '"') });
+  }
+  function gVerb() {
+    const rounds = pick(VERBS, 8).map(([s, opts, a, sk]) => ({ s, a, opts: shuffle(opts), sk, sayAfter: s.replace("___", a) }));
+    mcGame({ rounds, title: "Dopl\u0148 spr\xE1vne slovo", render: (r) => '<div class="big">'.concat(esc(r.s).replace("___", '<span class="blank">?</span>'), '</div><p class="hand">').concat(esc(r.sk), "</p>"), after: (r) => "Richtig! ".concat(r.sayAfter) });
+  }
+  function gArticle() {
+    const rounds = pick(NOUNS, 10).map(([n, sk, g]) => ({ n, sk, g, a: g === "die" ? "eine" : "ein", opts: ["ein", "eine"], sayAfter: "".concat(g, " ").concat(n, ". ").concat(g === "die" ? "eine" : "ein", " ").concat(n, ".") }));
+    mcGame({
+      rounds,
+      title: "ein alebo eine?",
+      render: (r) => '<div class="big">Das ist <span class="blank">?</span> '.concat(esc(r.n), '.</div><p class="hand">To je ').concat(esc(r.sk), ".</p>"),
+      after: (r) => "Richtig! ".concat(r.g, " ").concat(r.n, " \u2192 ").concat(r.a, " ").concat(r.n)
+    });
+  }
+  function gSentence() {
+    const list = pick(SENT, 6);
+    let i = 0, score = 0;
+    function next() {
+      if (i >= list.length) return endScreen(score, list.length, gSentence);
+      const [de, sk] = list[i];
+      const words = de.split(" ");
+      let pool = shuffle(words.map((w, k) => ({ w, k })));
+      if (pool.map((x) => x.w).join(" ") === de && words.length > 1) pool.reverse();
+      let ans = [], missed = false;
+      function draw() {
+        stage.innerHTML = '<div class="meta"><span>Poskladaj vetu</span><span>'.concat(i + 1, " / ").concat(list.length, " \xB7 spr\xE1vne ").concat(score, '</span></div>\n      <div class="big" style="font-size:1.3rem">').concat(esc(sk), '</div>\n      <div class="tiles answer" id="ans" aria-label="Tvoja veta">').concat(ans.map((x, k) => '<button class="tile" data-a="'.concat(k, '">').concat(esc(x.w), "</button>")).join(""), '</div>\n      <div class="tiles" id="pool">').concat(pool.map((x, k) => '<button class="tile" data-p="'.concat(k, '">').concat(esc(x.w), "</button>")).join(""), '</div>\n      <div class="row"><button class="btn" id="check" ').concat(pool.length ? "disabled" : "", '>Skontrolova\u0165</button><button class="btn ghost" id="hint">Vypo\u010Du\u0165 vetu</button></div>\n      <div class="feedback" id="fb"></div>');
+        stage.querySelectorAll("[data-p]").forEach((b) => b.onclick = () => {
+          ans.push(pool.splice(+b.dataset.p, 1)[0]);
+          draw();
+        });
+        stage.querySelectorAll("[data-a]").forEach((b) => b.onclick = () => {
+          pool.push(ans.splice(+b.dataset.a, 1)[0]);
+          draw();
+        });
+        $("#hint").onclick = () => {
+          missed = true;
+          speak(de);
+        };
+        $("#check").onclick = () => {
+          const fb = $("#fb");
+          if (ans.map((x) => x.w).join(" ") === de) {
+            if (!missed) {
+              score++;
+              addStar();
+            }
+            fb.className = "feedback ok";
+            fb.textContent = "Richtig! Spr\xE1vne!";
+            speak(de);
+            i++;
+            stage.querySelectorAll("button").forEach((x) => x.disabled = true);
+            setTimeout(next, 2200);
+          } else {
+            missed = true;
+            fb.className = "feedback no";
+            fb.textContent = "E\u0161te nie. Pam\xE4taj: sloveso je na 2. mieste! Klikni na slovo hore a vr\xE1\u0165 ho sp\xE4\u0165.";
+          }
+        };
+      }
+      draw();
+    }
+    next();
+  }
+  function gMemory(srcIn) {
+    const src = srcIn || [...GREET.slice(0, 8), ...L1.filter((l) => l[0].length < 16).slice(0, 8), ...NUM.slice(1, 13).map((w, i) => [w, String(i + 1)])];
+    const pairs = pick(src, 6);
+    let cards = shuffle(pairs.flatMap(([de, sk], id) => [{ id, t: de, de: true }, { id, t: sk, de: false }]));
+    let open = [], found = 0, moves = 0, lock = false;
+    stage.innerHTML = '<div class="meta"><span>Pexeso: n\xE1jdi dvojice</span><span id="mv">\u0165ahy 0 \xB7 dvojice 0 / 6</span></div><div class="memory">'.concat(cards.map((c, k) => '<button class="mcard" data-k="'.concat(k, '" aria-label="Karti\u010Dka ').concat(k + 1, '"><span class="in"><span class="f" aria-hidden="true">?</span><span class="b').concat(c.de ? " de" : "", '">').concat(esc(c.t), "</span></span></button>")).join(""), '</div><div class="feedback" id="fb"></div>');
+    stage.querySelectorAll(".mcard").forEach((b) => b.onclick = () => {
+      const k = +b.dataset.k, c = cards[k];
+      if (lock || b.classList.contains("open") || b.classList.contains("done")) return;
+      b.classList.add("open");
+      b.setAttribute("aria-label", c.t);
+      open.push({ k, b, c });
+      if (c.de) speak(c.t);
+      if (open.length === 2) {
+        moves++;
+        const [a, z] = open;
+        if (a.c.id === z.c.id) {
+          [a, z].forEach((x) => {
+            x.b.classList.remove("open");
+            x.b.classList.add("done");
+          });
+          found++;
+          addStar();
+          open = [];
+          $("#fb").className = "feedback ok";
+          $("#fb").textContent = "Richtig! Dvojica!";
+          if (found === 6) setTimeout(() => endScreen(6, 6, gMemory), 1200);
+        } else {
+          lock = true;
+          $("#fb").className = "feedback";
+          $("#fb").textContent = "";
+          setTimeout(() => {
+            [a, z].forEach((x) => {
+              x.b.classList.remove("open");
+              x.b.setAttribute("aria-label", "Karti\u010Dka");
+            });
+            open = [];
+            lock = false;
+          }, 1100);
+        }
+        $("#mv").textContent = "\u0165ahy ".concat(moves, " \xB7 dvojice ").concat(found, " / 6");
+      }
+    });
+  }
+  const NUMW = NUM;
+  const CHARS = [["Felix", 11, "er"], ["Lena", 10, "sie"], ["Sofia", 10, "sie"], ["Tom", 12, "er"], ["Mia", 9, "sie"], ["Ben", 13, "er"], ["Anna", 8, "sie"], ["Max", 14, "er"]];
+  const SITU = [
+    ["Je 7:30 r\xE1no. Stretne\u0161 suseda pred domom.", "Guten Morgen!"],
+    ["Je 15:00. Vojde\u0161 do obchodu.", "Guten Tag!"],
+    ["Je 19:00. Na n\xE1v\u0161tevu pri\u0161la babka.", "Guten Abend!"],
+    ["Ide\u0161 spa\u0165. \u010Co povie\u0161 mamine?", "Gute Nacht!"],
+    ["Odch\xE1dza\u0161 od kamar\xE1ta domov.", "Tsch\xFCs!"],
+    ["Hodina skon\u010Dila, l\xFA\u010Di\u0161 sa s pani u\u010Dite\u013Ekou.", "Auf Wiedersehen!"],
+    ["Na ihrisku stretne\u0161 kamar\xE1ta.", "Hallo!"],
+    ["Kamar\xE1t ti po\u017Ei\u010Dal pero.", "Danke!"],
+    ["Zajtra sa uvid\xEDte znova v \u0161kole.", "Bis morgen!"],
+    ["Kamar\xE1t sa p\xFDta \u201EWie geht's?\" a ty sa m\xE1\u0161 v\xFDborne.", "Super!"],
+    ["Kamar\xE1t sa p\xFDta \u201EWie geht's?\" a teba bol\xED hlava.", "Nicht so gut."],
+    ['Niekto ti povie \u201EDanke!"', "Bitte!"]
+  ];
+  const GREETOPTS = ["Guten Morgen!", "Guten Tag!", "Guten Abend!", "Gute Nacht!", "Tsch\xFCs!", "Auf Wiedersehen!", "Hallo!", "Danke!", "Bitte!", "Bis morgen!", "Super!", "Nicht so gut."];
+  const REPLY = [
+    ["Wie hei\xDFt du?", "Ich hei\xDFe Lena."],
+    ["Wie alt bist du?", "Ich bin zehn."],
+    ["Wer ist das?", "Das ist Felix."],
+    ["Wie geht's?", "Gut, danke."],
+    ["Wie hei\xDFt er?", "Er hei\xDFt Tom."],
+    ["Wie hei\xDFt sie?", "Sie hei\xDFt Mia."],
+    ["Wie alt ist sie?", "Sie ist elf."],
+    ["Danke!", "Bitte!"],
+    ["Tsch\xFCs!", "Tsch\xFCs, bis morgen!"],
+    ["Und wie alt ist er?", "Er ist zw\xF6lf."]
+  ];
+  const PRONQ = [
+    ["Felix", "er"],
+    ["Lena", "sie"],
+    ["der Hund", "er"],
+    ["die Katze", "sie"],
+    ["das Buch", "es"],
+    ["das M\xE4dchen", "es", "M\xE4dchen je v nem\u010Dine stredn\xFD rod, preto es."],
+    ["Herr Lenz", "er"],
+    ["Frau Lenz", "sie"],
+    ["der Ball", "er"],
+    ["die Schule", "sie"],
+    ["das Haus", "es"],
+    ["der Lehrer", "er"],
+    ["die Maus", "sie"],
+    ["das Heft", "es"],
+    ["die Lehrerin", "sie"],
+    ["der Junge", "er"]
+  ];
+  const TRANS = [
+    ["Vol\xE1m sa Lena.", "Ich hei\xDFe Lena."],
+    ["Kto je to?", "Wer ist das?"],
+    ["Ako sa vol\xE1\u0161?", "Wie hei\xDFt du?"],
+    ["M\xE1m desa\u0165 rokov.", "Ich bin zehn Jahre alt."],
+    ["To je pes.", "Das ist ein Hund."],
+    ["Dobr\xE9 r\xE1no!", "Guten Morgen!"],
+    ["Ako sa m\xE1\u0161?", "Wie geht's?"],
+    ["Ko\u013Eko m\xE1\u0161 rokov?", "Wie alt bist du?"],
+    ["To je ma\u010Dka.", "Das ist eine Katze."],
+    ["Vol\xE1 sa Felix.", "Er hei\xDFt Felix."]
+  ];
+  const norm = (s) => s.trim().toLowerCase().replace(/[.,!?¿¡'’"„“]/g, "").replace(/\s+/g, " ");
+  const loose = (s) => norm(s).replace(/ß/g, "ss").replace(/ä/g, "ae").replace(/ö/g, "oe").replace(/ü/g, "ue");
+  function judge(input, correct) {
+    if (input.trim().replace(/\s+/g, " ").replace(/[.!?]$/, "") === correct.replace(/[.!?]$/, "")) return { ok: true, tip: "" };
+    if (norm(input) === norm(correct)) return { ok: true, tip: "Pozor na ve\u013Ek\xE9 p\xEDsmen\xE1: ".concat(correct) };
+    if (loose(input) === loose(correct)) return { ok: true, tip: "Skoro! Spr\xE1vne sa p\xED\u0161e: ".concat(correct) };
+    return { ok: false, tip: "" };
+  }
+  const UML = '<div class="uml" aria-label="Nemeck\xE9 p\xEDsmen\xE1">'.concat(["\xE4", "\xF6", "\xFC", "\xDF", "\xC4", "\xD6", "\xDC"].map((c) => '<button type="button" class="chip" data-ins="'.concat(c, '">').concat(c, "</button>")).join(""), "</div>");
+  function wireUml(inp) {
+    stage.querySelectorAll("[data-ins]").forEach((b) => b.onclick = () => {
+      var _a2, _b;
+      const s = (_a2 = inp.selectionStart) != null ? _a2 : inp.value.length, e = (_b = inp.selectionEnd) != null ? _b : s;
+      inp.value = inp.value.slice(0, s) + b.dataset.ins + inp.value.slice(e);
+      inp.focus();
+      inp.setSelectionRange(s + 1, s + 1);
+    });
+  }
+  function typeGame({ rounds, title, render, onStart, after }) {
+    let i = 0, score = 0;
+    function next() {
+      if (i >= rounds.length) return endScreen(score, rounds.length, () => startGame(curGame));
+      const r = rounds[i];
+      let missed = false;
+      stage.innerHTML = '<div class="meta"><span>'.concat(title, "</span><span>").concat(i + 1, " / ").concat(rounds.length, " \xB7 spr\xE1vne ").concat(score, "</span></div>").concat(render(r), '\n      <form class="typeform" id="tf"><input id="typeIn" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Tvoja odpove\u010F" placeholder="Nap\xED\u0161 sem\u2026"><button class="btn" type="submit">Skontrolova\u0165</button></form>\n      ').concat(UML, '<div class="row"><button class="btn ghost" type="button" id="giveup">Neviem, uk\xE1\u017E</button></div><div class="feedback" id="fb"></div>');
+      const inp = $("#typeIn");
+      wireUml(inp);
+      setTimeout(() => inp.focus(), 50);
+      const rp = $("#replay", stage);
+      if (rp) rp.onclick = () => speak(r.audio);
+      if (onStart) onStart(r);
+      $("#giveup").onclick = () => {
+        missed = true;
+        inp.value = r.a;
+        const fb = $("#fb");
+        fb.className = "feedback";
+        fb.textContent = "Spr\xE1vne je: ".concat(r.a, ". Prep\xED\u0161 to a skontroluj.");
+        speak(r.a);
+        inp.focus();
+      };
+      $("#tf").onsubmit = (e) => {
+        e.preventDefault();
+        const fb = $("#fb");
+        const j = (r.alts || [r.a]).map((x) => judge(inp.value, x)).find((x) => x.ok) || { ok: false, tip: "" };
+        if (j.ok) {
+          if (!missed) {
+            score++;
+            addStar();
+          }
+          fb.className = "feedback ok";
+          fb.textContent = j.tip || "Richtig! " + (after ? after(r) : "");
+          speak(r.a);
+          stage.querySelectorAll("button,input").forEach((x) => x.disabled = true);
+          i++;
+          setTimeout(next, j.tip ? 2600 : 1700);
+        } else {
+          missed = true;
+          fb.className = "feedback no";
+          fb.textContent = "E\u0161te nie. Sk\xFAs znova, alebo si to vypo\u010Duj.";
+        }
+      };
+    }
+    next();
+  }
+  function gDictation(poolIn) {
+    const pool = poolIn || [...NOUNS.map((n) => n[0]), ...NUM.slice(1, 21), "Hallo", "Tsch\xFCs", "Danke", "Bitte", "Guten Tag", "Gute Nacht", "Wie geht's?"];
+    const rounds = pick(pool, 8).map((w) => ({ audio: w, a: w }));
+    typeGame({ rounds, title: "Dikt\xE1t: nap\xED\u0161, \u010Do po\u010Duje\u0161", render: () => '<div class="big">H\xF6r zu und schreib!</div><div class="row"><button class="btn" id="replay" type="button">Vypo\u010Du\u0165 znova</button></div>', onStart: (r) => setTimeout(() => speak(r.audio), 250) });
+  }
+  function gWriteNum() {
+    const rounds = pick([...Array(21).keys()], 8).map((n) => ({ n, a: NUM[n] }));
+    typeGame({ rounds, title: "Nap\xED\u0161 \u010D\xEDslo slovom", render: (r) => '<div class="big" style="font-size:3.4rem;color:var(--pen)">'.concat(r.n, "</div>") });
+  }
+  function gTranslate() {
+    const rounds = pick(TRANS, 6).map(([sk, de]) => ({ sk, a: de }));
+    typeGame({ rounds, title: "Prelo\u017E do nem\u010Diny", render: (r) => '<div class="big">'.concat(esc(r.sk), '</div><p class="hand">Nezabudni: sloveso je na 2. mieste.</p>') });
+  }
+  function gTrueFalse() {
+    const rounds = [];
+    for (let k = 0; k < 8; k++) {
+      const c = CHARS[Math.floor(Math.random() * CHARS.length)];
+      const [n, age, g] = c;
+      const G = g === "er" ? "Er" : "Sie";
+      const truth = Math.random() < 0.5;
+      const kind = Math.floor(Math.random() * 3);
+      let s, why;
+      if (kind === 0) {
+        const nm = truth ? n : pick(CHARS.filter((x) => x[0] !== n), 1)[0][0];
+        s = "Das ist ".concat(nm, ".");
+        why = "Na obr\xE1zku je ".concat(n, ".");
+      } else if (kind === 1) {
+        const other = g === "er" ? "Sie" : "Er";
+        const P = truth ? G : Math.random() < 0.5 ? other : G;
+        const nm = truth || P !== G ? n : pick(CHARS.filter((x) => x[0] !== n), 1)[0][0];
+        s = "".concat(P, " hei\xDFt ").concat(nm, ".");
+        const ok = P === G && nm === n;
+        if (ok !== truth) {
+        }
+        why = P !== G ? "".concat(n, " je ").concat(g === "er" ? "chlapec, tak\u017Ee er" : "diev\u010Da, tak\u017Ee sie", ".") : "Vol\xE1 sa ".concat(n, ".");
+        rounds.push({ c, s, a: ok ? "Richtig" : "Falsch", opts: ["Richtig", "Falsch"], audio: s, why });
+        continue;
+      } else {
+        const a2 = truth ? age : Math.max(6, Math.min(15, age + (Math.random() < 0.5 ? -1 : 1) * (1 + Math.floor(Math.random() * 2))));
+        s = "".concat(G, " ist ").concat(NUM[a2], " Jahre alt.");
+        why = "".concat(n, " m\xE1 ").concat(age, " (").concat(NUM[age], ").");
+        rounds.push({ c, s, a: a2 === age ? "Richtig" : "Falsch", opts: ["Richtig", "Falsch"], audio: s, why });
+        continue;
+      }
+      rounds.push({ c, s, a: truth ? "Richtig" : "Falsch", opts: ["Richtig", "Falsch"], audio: s, why });
+    }
+    mcGame({ rounds, title: "Richtig oder falsch?", render: (r) => '<div class="charcard"><span class="who '.concat(r.c[2] === "er" ? "f" : "l", '" style="width:64px;height:64px;font-size:1.6rem">').concat(r.c[0][0], '</span><div><div class="big" style="font-size:1.6rem">').concat(r.c[0], '</div><div class="hand">').concat(r.c[2] === "er" ? "chlapec" : "diev\u010Da", " \xB7 ").concat(r.c[1], ' rokov</div></div></div><p class="big" style="font-size:1.4rem">\u201E').concat(esc(r.s), '"</p>').concat(replayBtn), after: (r) => "Richtig! ".concat(r.why) });
+  }
+  function gSituation() {
+    const rounds = pick(SITU, 8).map(([sk, de]) => ({ sk, a: de, opts: shuffle([de, ...pick(GREETOPTS.filter((x) => x !== de), 3)]), sayAfter: de }));
+    mcGame({ rounds, title: "\u010Co povie\u0161?", render: (r) => '<div class="big" style="font-size:1.4rem">'.concat(esc(r.sk), "</div>") });
+  }
+  function gReply() {
+    const rounds = pick(REPLY, 8).map(([q, a]) => ({ audio: q, q, a, opts: shuffle([a, ...pick(REPLY.filter((x) => x[1] !== a).map((x) => x[1]), 3)]), sayAfter: a }));
+    mcGame({ rounds, title: "\u010Co odpovie\u0161?", render: (r) => '<div class="big">\u201E'.concat(esc(r.q), '"</div>').concat(replayBtn, '<p class="hand">Vyber odpove\u010F, ktor\xE1 sa hod\xED.</p>') });
+  }
+  function gPronoun() {
+    const rounds = pick(PRONQ, 10).map(([w, p, tip]) => ({ w, a: p, tip, opts: ["er", "sie", "es"], sayAfter: "".concat(w, ". ").concat(p, ".") }));
+    mcGame({ rounds, title: "er, sie alebo es?", render: (r) => '<div class="big">'.concat(esc(r.w), ' \u2192 <span class="blank">?</span></div><p class="hand">Kto alebo \u010Do to je? On, ona, alebo ono?</p>'), after: (r) => "Richtig! ".concat(r.w, " \u2192 ").concat(r.a, ". ").concat(r.tip || "") });
+  }
+  function gMath() {
+    const rounds = [];
+    for (let k = 0; k < 8; k++) {
+      let a, b, op, res;
+      if (Math.random() < 0.6) {
+        a = 1 + Math.floor(Math.random() * 12);
+        b = 1 + Math.floor(Math.random() * (20 - a));
+        op = "plus";
+        res = a + b;
+      } else {
+        a = 5 + Math.floor(Math.random() * 16);
+        b = 1 + Math.floor(Math.random() * a);
+        op = "minus";
+        res = a - b;
+      }
+      const near = shuffle([...Array(21).keys()].filter((x) => x !== res && Math.abs(x - res) <= 4)).slice(0, 3);
+      rounds.push({ audio: "".concat(NUM[a], " ").concat(op, " ").concat(NUM[b]), txt: "".concat(NUM[a], " ").concat(op, " ").concat(NUM[b]), a: NUM[res], opts: shuffle([res, ...near]).map((x) => NUM[x]), sayAfter: "".concat(NUM[a], " ").concat(op, " ").concat(NUM[b], " ist ").concat(NUM[res], ".") });
+    }
+    mcGame({ rounds, title: "Po\u010D\xEDtaj po nemecky", render: (r) => '<div class="big">'.concat(r.txt, ' = <span class="blank">?</span></div>').concat(replayBtn, '<p class="hand">plus = +, minus = \u2212</p>') });
+  }
+  function gSpeed() {
+    let score = 0, left = 60, cur = null, timer = null, wrong = 0;
+    stage.innerHTML = '<div class="meta"><span>Blesk: \u010D\xEDsla za 60 sek\xFAnd</span><span id="spd">spr\xE1vne 0</span></div><div class="timerbar"><span id="tbar"></span></div><div class="big" id="sq" style="font-size:3.4rem;color:var(--pen)"></div><div class="opts" id="sopts"></div><div class="feedback" id="fb"></div><div class="row"><button class="btn" id="sgo">\u0160tart!</button></div>';
+    function q() {
+      cur = Math.floor(Math.random() * 21);
+      $("#sq").textContent = cur;
+      const near = shuffle([...Array(21).keys()].filter((x) => x !== cur)).slice(0, 3);
+      $("#sopts").innerHTML = shuffle([cur, ...near]).map((x) => '<button class="opt" data-n="'.concat(x, '">').concat(NUM[x], "</button>")).join("");
+      $("#sopts").querySelectorAll(".opt").forEach((b) => b.onclick = () => {
+        if (+b.dataset.n === cur) {
+          score++;
+          addStar();
+          $("#spd").textContent = "spr\xE1vne " + score;
+          $("#fb").className = "feedback ok";
+          $("#fb").textContent = "Richtig!";
+          q();
+        } else {
+          wrong++;
+          b.classList.add("no");
+          b.disabled = true;
+          $("#fb").className = "feedback no";
+          $("#fb").textContent = "Hups!";
+        }
+      });
+    }
+    $("#sgo").onclick = () => {
+      $("#sgo").parentElement.hidden = true;
+      q();
+      const t0 = Date.now();
+      timer = setInterval(() => {
+        left = 60 - (Date.now() - t0) / 1e3;
+        const bar = $("#tbar");
+        if (!bar) {
+          clearInterval(timer);
+          return;
+        }
+        bar.style.width = Math.max(0, left / 60 * 100) + "%";
+        if (left <= 0) {
+          clearInterval(timer);
+          let best = 0;
+          try {
+            best = +localStorage.getItem("dh-speed") || 0;
+            if (score > best) localStorage.setItem("dh-speed", score);
+          } catch (e) {
+          }
+          stage.innerHTML = '<div class="big">Zeit ist um! \u010Cas vypr\u0161al.</div><p class="hand">Spr\xE1vne: '.concat(score, " \xB7 chyby: ").concat(wrong).concat(score > best ? " \xB7 nov\xFD rekord!" : " \xB7 tvoj rekord: ".concat(best), '</p><div class="row"><button class="btn" id="again">Hra\u0165 znova</button></div>');
+          $("#again").onclick = gSpeed;
+          speak(score > best ? "Super! Neuer Rekord!" : "Gut gemacht!");
+        }
+      }, 100);
+    };
+  }
+  function gSort() {
+    const words = pick(NOUNS, 9);
+    let sel = null, done = 0, score = 0;
+    const missed = /* @__PURE__ */ new Set();
+    stage.innerHTML = '<div class="meta"><span>Roztrie\u010F do krab\xEDc: der, die, das</span><span id="srt">0 / 9</span></div>\n   <p class="hand">Klikni na slovo a potom na spr\xE1vnu krabicu.</p>\n   <div class="tiles" id="spool">'.concat(words.map((w, k) => '<button class="tile" data-k="'.concat(k, '">').concat(w[0], "<small> \xB7 ").concat(w[1], "</small></button>")).join(""), '</div>\n   <div class="sortboxes">').concat(["der", "die", "das"].map((g) => '<button class="sbox '.concat(g, '" data-g="').concat(g, '"><b>').concat(g, '</b><span class="in" id="box-').concat(g, '"></span></button>')).join(""), '</div><div class="feedback" id="fb"></div>');
+    stage.querySelectorAll("#spool .tile").forEach((b) => b.onclick = () => {
+      stage.querySelectorAll("#spool .tile").forEach((x) => x.classList.remove("sel"));
+      b.classList.add("sel");
+      sel = +b.dataset.k;
+      speak(words[sel][0]);
+    });
+    stage.querySelectorAll(".sbox").forEach((bx) => bx.onclick = () => {
+      if (sel === null) {
+        $("#fb").className = "feedback";
+        $("#fb").textContent = "Najprv klikni na slovo.";
+        return;
+      }
+      const w = words[sel], fb = $("#fb");
+      if (w[2] === bx.dataset.g) {
+        if (!missed.has(sel)) {
+          score++;
+          addStar();
+        }
+        $("#box-" + w[2]).insertAdjacentHTML("beforeend", "<span>".concat(w[0], "</span>"));
+        stage.querySelector('#spool [data-k="'.concat(sel, '"]')).remove();
+        speak("".concat(w[2], " ").concat(w[0]));
+        fb.className = "feedback ok";
+        fb.textContent = "Richtig! ".concat(w[2], " ").concat(w[0]);
+        sel = null;
+        done++;
+        $("#srt").textContent = "".concat(done, " / 9");
+        if (done === 9) setTimeout(() => endScreen(score, 9, gSort), 1500);
+      } else {
+        missed.add(sel);
+        fb.className = "feedback no";
+        fb.textContent = "Nie, ".concat(w[0], " nie je ").concat(bx.dataset.g, ". Sk\xFAs in\xFA krabicu.");
+      }
+    });
+  }
+  function gTable() {
+    const rows = [["sein", "ich", "bin"], ["sein", "du", "bist"], ["sein", "er", "ist"], ["hei\xDFen", "ich", "hei\xDFe"], ["hei\xDFen", "du", "hei\xDFt"], ["hei\xDFen", "sie", "hei\xDFt"]];
+    stage.innerHTML = '<div class="meta"><span>Dopl\u0148 tabu\u013Eku slovies</span><span>6 pol\xED\u010Dok</span></div>\n   <div class="gram" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">'.concat(["sein", "hei\xDFen"].map((v) => '<div class="box"><h3>'.concat(v, "</h3>").concat(rows.map((r, k) => r[0] === v ? '<label class="trow" for="tb'.concat(k, '"><span>').concat(r[1], '</span><input id="tb').concat(k, '" data-k="').concat(k, '" type="text" autocomplete="off" autocapitalize="off" spellcheck="false"><span class="mk" id="mk').concat(k, '"></span></label>') : "").join(""), "</div>")).join(""), "</div>\n   ").concat(UML, '<div class="row"><button class="btn" id="tcheck">Skontrolova\u0165</button><button class="btn ghost" id="tnew">Vymaza\u0165</button></div><div class="feedback" id="fb"></div>');
+    let last = null;
+    stage.querySelectorAll(".trow input").forEach((i) => i.addEventListener("focus", () => last = i));
+    stage.querySelectorAll("[data-ins]").forEach((b) => b.onclick = () => {
+      const i = last || $("#tb0");
+      i.value += b.dataset.ins;
+      i.focus();
+    });
+    const awarded = /* @__PURE__ */ new Set();
+    $("#tcheck").onclick = () => {
+      let ok = 0;
+      rows.forEach((r, k) => {
+        const i = $("#tb" + k), m = $("#mk" + k);
+        const good = norm(i.value) === norm(r[2]);
+        m.textContent = i.value ? good ? "\u2713" : "\u2717" : "";
+        m.style.color = good ? "var(--ok)" : "var(--bad)";
+        if (good) {
+          ok++;
+          if (!awarded.has(k)) {
+            awarded.add(k);
+            addStar();
+          }
+        }
+      });
+      const fb = $("#fb");
+      if (ok === 6) {
+        fb.className = "feedback ok";
+        fb.textContent = "Perfekt! Cel\xE1 tabu\u013Eka je spr\xE1vne.";
+        speakSeq(rows.map((r) => ({ t: "".concat(r[1], " ").concat(r[2]) })));
+      } else {
+        fb.className = "feedback no";
+        fb.textContent = "Spr\xE1vne ".concat(ok, " zo 6. Oprav pol\xED\u010Dka s \u2717. Pom\xF4cka je v Gramatike.");
+      }
+    };
+    $("#tnew").onclick = gTable;
+  }
+  function gBalloons(poolIn) {
+    const def = [...NOUNS.map((n) => n[0]), "zw\xF6lf", "sieben", "Hallo", "Tsch\xFCs", "Danke", "Katze", "M\xE4dchen", "Freund"];
+    let pool = (poolIn || def).map((w) => w.replace(/^(der|die|das) /, "")).filter((w) => /^[A-Za-zÄÖÜäöü]{4,11}$/.test(w));
+    if (pool.length < 3) pool = def.filter((w) => w.length >= 4);
+    const word = pick(pool, 1)[0].toUpperCase();
+    const found = /* @__PURE__ */ new Set();
+    let lives = 7, over = false;
+    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ\xC4\xD6\xDC\xDF".split("");
+    function draw() {
+      const shown = [...word].map((ch) => found.has(ch) ? ch : "_");
+      stage.innerHTML = '<div class="meta"><span>Bal\xF3ny: uh\xE1dni slovo</span><span>bal\xF3ny: '.concat(lives, '</span></div>\n     <div class="balloons" aria-label="Zost\xE1va ').concat(lives, ' bal\xF3nov">').concat(Array.from({ length: 7 }, (_, k) => '<span class="bl'.concat(k < lives ? "" : " pop", '" style="--h:').concat(k * 50, '"></span>')).join(""), '</div>\n     <div class="big wordline">').concat(shown.join(" "), '</div>\n     <div class="keys">').concat(letters.map((l) => {
+        const U = l === "\xDF" ? "\xDF" : l;
+        const used = found.has(U) || tried.has(U);
+        return '<button class="key'.concat(used ? word.includes(U) ? " hit" : " miss" : "", '" data-l="').concat(U, '" ').concat(used || over ? "disabled" : "", ">").concat(l, "</button>");
+      }).join(""), '</div>\n     <div class="feedback" id="fb"></div>');
+      stage.querySelectorAll(".key").forEach((b) => b.onclick = () => guess(b.dataset.l));
+    }
+    const tried = /* @__PURE__ */ new Set();
+    function guess(l) {
+      speak(ABC_TTS[l] || l);
+      tried.add(l);
+      if (word.includes(l)) found.add(l);
+      else lives--;
+      const win = [...word].every((ch) => found.has(ch));
+      draw();
+      if (win) {
+        over = true;
+        addStar(2);
+        $("#fb").className = "feedback ok";
+        $("#fb").textContent = "Super! Slovo je ".concat(word, ". +2 hviezdi\u010Dky");
+        setTimeout(() => speak(word.toLowerCase()), 700);
+        end();
+      } else if (lives <= 0) {
+        over = true;
+        $("#fb").className = "feedback no";
+        $("#fb").textContent = "Bal\xF3ny praskli. Slovo bolo ".concat(word, ".");
+        setTimeout(() => speak(word.toLowerCase()), 700);
+        end();
+      }
+    }
+    function end() {
+      stage.querySelectorAll(".key").forEach((k) => k.disabled = true);
+      stage.insertAdjacentHTML("beforeend", '<div class="row"><button class="btn" id="again">\u010Eal\u0161ie slovo</button></div>');
+      $("#again").onclick = () => gBalloons(poolIn);
+    }
+    draw();
+  }
+  const splitForm = (f) => {
+    const [a, b] = f.split("|");
+    return b === void 0 ? esc(a) : "".concat(esc(a), '<span class="end">').concat(esc(b), "</span>");
+  };
+  const plain = (f) => f.replace("|", "");
+  function conj(tag, title, rows, after = "") {
+    return '<div class="box"><h3><span class="tag">'.concat(tag, "</span>").concat(title, "</h3><table><tbody>").concat(rows.map(([sk, p, f]) => "<tr><td>".concat(sk, '</td><td class="v"><button class="tsay" data-de="').concat(esc(p + " " + plain(f)), '">').concat(esc(p), " ").concat(splitForm(f), "</button></td></tr>")).join(""), "</tbody></table>").concat(after, "</div>");
+  }
+  function gbox(tag, title, html) {
+    return '<div class="box"><h3><span class="tag">'.concat(tag, "</span>").concat(title, "</h3>").concat(html, "</div>");
+  }
+  function exs(list) {
+    return '<div class="ex">'.concat(list.map(([de, sk]) => '<button class="tsay" data-de="'.concat(esc(de), '">').concat(esc(de), ' <span class="hand">\u2013 ').concat(esc(sk), "</span></button>")).join(""), "</div>");
+  }
+  const note = (h) => '<p class="note">'.concat(h, "</p>");
+  const chips = (ws) => '<div class="chips">'.concat(ws.map((w) => '<button class="chip" data-de="'.concat(esc(w), '">').concat(esc(w), "</button>")).join(""), "</div>");
+  const artColor = (de) => esc(de).replace(/^(der|die|das) /, (m, a) => '<span class="'.concat(a, '">').concat(a, "</span> "));
+  const P3 = ["Ich", "Du", "Er"];
+  const LESSONS = [
+    {
+      id: "start",
+      mod: 0,
+      code: "\xDAvod",
+      title: "Wir starten",
+      sk: "Za\u010D\xEDname",
+      goals: ["pozdravi\u0165 a rozl\xFA\u010Di\u0165 sa", "abeceda a hl\xE1skovanie", "\u010D\xEDsla 0\u201310"],
+      sections: [["Pozdravy", "#pozdravy"], ["Abeceda", "#abeceda"], ["\u010C\xEDsla", "#cisla"], ["Cvi\u010Denia", "@ex"]],
+      vocab: [...GREET.map((g) => [g[0], g[1]]), ...NUM.slice(0, 11).map((w, i) => [w, String(i)])],
+      ex: [
+        { t: "game", g: "situation", title: "Ktor\xFD pozdrav sa hod\xED?", d: "Vyber pozdrav do situ\xE1cie" },
+        { t: "listen", title: "\u010C\xEDsla 0\u201310", d: "Po\u010Duje\u0161 \u010D\xEDslo, klikni na\u0148", items: NUM.slice(0, 11).map((w, i) => [w, String(i)]) },
+        { t: "game", g: "letters", title: "P\xEDsmenk\xE1", d: "Ktor\xE9 p\xEDsmeno po\u010Duje\u0161?" },
+        { t: "vlisten", title: "Po\u010D\xFAvaj pozdravy", d: "\u010Co znamen\xE1, \u010Do po\u010Duje\u0161?" },
+        { t: "vmemory", title: "Pexeso", d: "Nemeck\xE9 a slovensk\xE9 dvojice" }
+      ]
+    },
+    {
+      id: "m1l1",
+      mod: 1,
+      code: "1.1",
+      title: "Wer ist das?",
+      sk: "Kto je to?",
+      goals: ["predstavi\u0165 seba a in\xFDch", "poveda\u0165, ko\u013Eko m\xE1m rokov", "\u010D\xEDsla do 20", "sein, hei\xDFen, ein/eine"],
+      sections: [["Slov\xED\u010Dka", "@vocab"], ["Vety a rozhovor", "#lektion1"], ["Gramatika", "#gramatika"], ["Cvi\u010Denia", "@ex"]],
+      vocab: [["Wer?", "Kto?"], ["Wie?", "Ako?"], ["hei\xDFen", "vola\u0165 sa"], ["sein", "by\u0165"], ["alt", "star\xFD"], ["Jahre alt", "rokov (vek)"], ["der Junge", "chlapec"], ["das M\xE4dchen", "diev\u010Da"], ["der Freund", "kamar\xE1t"], ["die Freundin", "kamar\xE1tka"], ["die Frau", "pani, \u017Eena"], ["der Herr", "p\xE1n"], ["der Hund", "pes"], ["die Katze", "ma\u010Dka"], ["und", "a"], ["auch", "aj, tie\u017E"], ...NUM.slice(11, 21).map((w, i) => [w, String(i + 11)])],
+      ex: [
+        { t: "game", g: "verb", title: "bin, bist, ist?", d: "Dopl\u0148 sein a hei\xDFen" },
+        { t: "game", g: "table", title: "Dopl\u0148 tabu\u013Eku", d: "Nap\xED\u0161 tvary slovies" },
+        { t: "game", g: "article", title: "ein alebo eine?", d: "Neur\u010Dit\xFD \u010Dlen" },
+        { t: "game", g: "sentence", title: "Poskladaj vetu", d: "Slovosled v ot\xE1zkach" },
+        { t: "game", g: "truefalse", title: "Richtig oder falsch?", d: "Plat\xED veta o kamar\xE1tovi?" },
+        { t: "game", g: "reply", title: "\u010Co odpovie\u0161?", d: "Ot\xE1zka a odpove\u010F" },
+        { t: "listen", title: "\u010C\xEDsla 11\u201320", d: "Po\u010Duje\u0161 \u010D\xEDslo, klikni na\u0148", items: NUM.slice(11, 21).map((w, i) => [w, String(i + 11)]) },
+        { t: "game", g: "writenum", title: "Nap\xED\u0161 \u010D\xEDslo", d: "\u010C\xEDslo slovom" }
+      ]
+    },
+    {
+      id: "m1l2",
+      mod: 1,
+      code: "1.2",
+      title: "Das ist meine Familie",
+      sk: "To je moja rodina",
+      goals: ["pomenova\u0165 \u010Dlenov rodiny", "op\xEDsa\u0165 \u013Eud\xED", "mein/meine, dein/deine", "der, die, das", "ot\xE1zky \xE1no/nie"],
+      vocab: [["die Familie", "rodina"], ["die Mutter", "matka"], ["die Mama", "mama"], ["der Vater", "otec"], ["der Papa", "ocko"], ["die Eltern", "rodi\u010Dia (mn. \u010D.)"], ["die Schwester", "sestra"], ["der Bruder", "brat"], ["die Oma", "babka"], ["der Opa", "dedko"], ["die Gro\xDFeltern", "star\xED rodi\u010Dia (mn. \u010D.)"], ["die Tante", "teta"], ["der Onkel", "ujo"], ["die Cousine", "sesternica"], ["der Cousin", "bratranec"], ["das Baby", "b\xE1b\xE4tko"], ["das Kind", "die\u0165a"], ["nett", "mil\xFD"], ["lustig", "vtipn\xFD"], ["jung", "mlad\xFD"], ["Ja", "\xE1no"], ["Nein", "nie"]],
+      phrases: [["Das ist meine Familie.", "To je moja rodina."], ["Das ist meine Mutter.", "To je moja mama."], ["Das ist mein Vater.", "To je m\xF4j otec."], ["Das sind meine Eltern.", "To s\xFA moji rodi\u010Dia."], ["Sie hei\xDFen Eva und Peter.", "Volaj\xFA sa Eva a Peter."], ["Wie hei\xDFt deine Schwester?", "Ako sa vol\xE1 tvoja sestra?"], ["Meine Schwester hei\xDFt Anna.", "Moja sestra sa vol\xE1 Anna."], ["Ist das dein Bruder?", "Je to tvoj brat?"], ["Nein, das ist mein Cousin.", "Nie, to je m\xF4j bratranec."], ["Meine Oma ist nett.", "Moja babka je mil\xE1."], ["Mein Onkel ist lustig.", "M\xF4j ujo je vtipn\xFD."]],
+      grammar: () => gbox("Privlast\u0148ovacie z\xE1men\xE1", "mein / meine, dein / deine", '<table><tbody>\n   <tr><td>der (mu\u017Esk\xFD)</td><td class="v"><button class="tsay" data-de="mein Vater, dein Vater"><span class="der">mein</span> Vater \xB7 <span class="der">dein</span> Vater</button></td></tr>\n   <tr><td>die (\u017Eensk\xFD)</td><td class="v"><button class="tsay" data-de="meine Mutter, deine Mutter"><span class="die">meine</span> Mutter \xB7 <span class="die">deine</span> Mutter</button></td></tr>\n   <tr><td>das (stredn\xFD)</td><td class="v"><button class="tsay" data-de="mein Baby, dein Baby"><span class="das">mein</span> Baby \xB7 <span class="das">dein</span> Baby</button></td></tr>\n   <tr><td>mno\u017En\xE9 \u010D\xEDslo</td><td class="v"><button class="tsay" data-de="meine Eltern, deine Eltern">meine Eltern \xB7 deine Eltern</button></td></tr></tbody></table>\n   <p>Funguje to ako <b>ein / eine</b>: kde je <i>ein</i>, tam je <i>mein</i>. Kde je <i>eine</i>, tam je <i>meine</i>.</p>') + gbox("Ur\u010Dit\xFD \u010Dlen", "der, die, das + mno\u017En\xE9 \u010D\xEDslo die", '<p>Ka\u017Ed\xE9 podstatn\xE9 meno m\xE1 svoj \u010Dlen: <span class="der">der</span> Vater, <span class="die">die</span> Mutter, <span class="das">das</span> Kind. V mno\u017Enom \u010D\xEDsle je <b>v\u017Edy die</b>: <i>die Eltern, die Gro\xDFeltern</i>.</p>' + note("U\u010D sa slov\xE1 v\u017Edy aj s \u010Dlenom a farbou. \u010Clen sa pod\u013Ea sloven\u010Diny odhadn\xFA\u0165 ned\xE1.")) + conj("Mno\u017En\xE9 \u010D\xEDslo", "sie sind, sie hei\xDFen", [["oni s\xFA", "sie", "sind"], ["oni sa volaj\xFA", "sie", "hei\xDF|en"]], exs([["Das sind meine Eltern.", "To s\xFA moji rodi\u010Dia."], ["Sie hei\xDFen Eva und Peter.", "Volaj\xFA sa Eva a Peter."]]) + note("<i>sie</i> m\xF4\u017Ee znamena\u0165 <b>ona</b> (sie ist) aj <b>oni</b> (sie sind). Pozn\xE1 sa to pod\u013Ea slovesa.")) + gbox("Ot\xE1zky \xE1no / nie", "Sloveso na za\u010Diatku", '<p>Ke\u010F sa p\xFDta\u0161 bez ot\xE1zneho slova, <span class="mark">sloveso</span> ide <b>na prv\xE9 miesto</b>:</p>'.concat(exs([["Das ist dein Bruder.", "Oznamovacia veta"], ["Ist das dein Bruder?", "Ot\xE1zka: Je to tvoj brat?"], ["Hei\xDFt deine Oma Maria?", "Vol\xE1 sa tvoja babka M\xE1ria?"]])).concat(note("Pri ot\xE1zke \xE1no/nie hlas na konci <b>st\xFApa</b> \u2197. Pri ot\xE1zke s <i>wer, wie</i> kles\xE1 \u2198. Vypo\u010Duj si to!"))),
+      pron: ["Ist das deine Mutter?", "Das ist meine Mutter.", "Wie hei\xDFt deine Mutter?"],
+      ex: [
+        { t: "mc", title: "mein alebo meine?", d: "Privlast\u0148ovacie z\xE1men\xE1", items: [["Das ist ___ Mutter.", ["mein", "meine"], "meine", "To je moja mama."], ["Das ist ___ Vater.", ["mein", "meine"], "mein", "To je m\xF4j otec."], ["___ Schwester hei\xDFt Lena.", ["Mein", "Meine"], "Meine", "Moja sestra sa vol\xE1 Lena."], ["___ Bruder ist zw\xF6lf.", ["Mein", "Meine"], "Mein", "M\xF4j brat m\xE1 12."], ["Das sind ___ Eltern.", ["mein", "meine"], "meine", "To s\xFA moji rodi\u010Dia. (mn. \u010D. \u2192 meine)"], ["Das ist ___ Baby.", ["mein", "meine"], "mein", "To je moje b\xE1b\xE4tko."], ["Wie hei\xDFt ___ Oma?", ["dein", "deine"], "deine", "Ako sa vol\xE1 tvoja babka?"], ["Ist das ___ Opa?", ["dein", "deine"], "dein", "Je to tvoj dedko?"], ["Wie alt ist ___ Bruder?", ["dein", "deine"], "dein", "Ko\u013Eko rokov m\xE1 tvoj brat?"], ["Das sind ___ Gro\xDFeltern.", ["mein", "meine"], "meine", "To s\xFA moji star\xED rodi\u010Dia."], ["___ Katze hei\xDFt Minka.", ["Mein", "Meine"], "Meine", "Moja ma\u010Dka sa vol\xE1 Minka."], ["Ist das ___ Tante?", ["dein", "deine"], "deine", "Je to tvoja teta?"]] },
+        { t: "sort", title: "der, die, das", d: "Roztrie\u010F rodinu do krab\xEDc", cats: ["der", "die", "das"], items: [["Vater", "der", "otec"], ["Mutter", "die", "matka"], ["Bruder", "der", "brat"], ["Schwester", "die", "sestra"], ["Baby", "das", "b\xE1b\xE4tko"], ["Onkel", "der", "ujo"], ["Tante", "die", "teta"], ["Opa", "der", "dedko"], ["Oma", "die", "babka"], ["Kind", "das", "die\u0165a"], ["Cousin", "der", "bratranec"], ["Cousine", "die", "sesternica"]] },
+        { t: "mc", title: "ist/sind, hei\xDFt/hei\xDFen", d: "Jeden alebo viacer\xED?", items: [["Das ___ meine Eltern.", ["ist", "sind"], "sind", "To s\xFA moji rodi\u010Dia."], ["Das ___ mein Vater.", ["ist", "sind"], "ist", "To je m\xF4j otec."], ["Sie ___ Eva und Peter.", ["hei\xDFt", "hei\xDFen"], "hei\xDFen", "Volaj\xFA sa Eva a Peter."], ["Meine Oma ___ Maria.", ["hei\xDFt", "hei\xDFen"], "hei\xDFt", "Moja babka sa vol\xE1 M\xE1ria."], ["Das ___ meine Gro\xDFeltern.", ["ist", "sind"], "sind", "To s\xFA moji star\xED rodi\u010Dia."], ["Meine Schwestern ___ Anna und Lea.", ["hei\xDFt", "hei\xDFen"], "hei\xDFen", "Moje sestry sa volaj\xFA Anna a Lea."], ["Wie ___ deine Eltern?", ["hei\xDFt", "hei\xDFen"], "hei\xDFen", "Ako sa volaj\xFA tvoji rodi\u010Dia?"], ["Wer ___ das? \u2013 Das ist Tante Jana.", ["ist", "sind"], "ist", "Kto je to? \u2013 To je teta Jana."]] },
+        { t: "order", title: "Ot\xE1zky \xE1no/nie", d: "Sloveso na za\u010Diatok!", items: [["Ist das deine Mutter?", "Je to tvoja mama?"], ["Hei\xDFt dein Bruder Tom?", "Vol\xE1 sa tvoj brat Tom?"], ["Ist deine Oma nett?", "Je tvoja babka mil\xE1?"], ["Sind das deine Eltern?", "S\xFA to tvoji rodi\u010Dia?"], ["Das ist mein Onkel.", "To je m\xF4j ujo."], ["Meine Tante ist lustig.", "Moja teta je vtipn\xE1."]] },
+        { t: "type", title: "Prelo\u017E", d: "Nap\xED\u0161 vetu po nemecky", items: [["To je moja mama.", "Das ist meine Mutter.|Das ist meine Mama."], ["M\xF4j brat sa vol\xE1 Jakub.", "Mein Bruder hei\xDFt Jakub."], ["Je to tvoja sestra?", "Ist das deine Schwester?"], ["To s\xFA moji rodi\u010Dia.", "Das sind meine Eltern."], ["Moja babka je mil\xE1.", "Meine Oma ist nett.|Meine Gro\xDFmutter ist nett."], ["M\xF4j ujo je vtipn\xFD.", "Mein Onkel ist lustig."]] },
+        { t: "vlisten", title: "Po\u010D\xFAvaj slov\xED\u010Dka", d: "\u010Co znamen\xE1, \u010Do po\u010Duje\u0161?" },
+        { t: "vmemory", title: "Pexeso", d: "Rodina v dvojiciach" }
+      ]
+    },
+    {
+      id: "m1l3",
+      mod: 1,
+      code: "1.3",
+      title: "Hast du Geschwister?",
+      sk: "M\xE1\u0161 s\xFArodencov?",
+      goals: ["rozpr\xE1va\u0165 o s\xFArodencoch", "op\xEDsa\u0165 v\xFDzor a povahu", "\u010D\xEDsla do 1000", "kde b\xFDvam", "haben, wohnen, wo, in"],
+      vocab: [["die Geschwister", "s\xFArodenci (mn. \u010D.)"], ["das Einzelkind", "jedin\xE1\u010Dik"], ["haben", "ma\u0165"], ["wohnen", "b\xFDva\u0165"], ["Wo?", "Kde?"], ["gro\xDF", "ve\u013Ek\xFD, vysok\xFD"], ["klein", "mal\xFD"], ["schlank", "\u0161t\xEDhly"], ["sportlich", "\u0161portov\xFD"], ["frech", "drz\xFD"], ["freundlich", "priate\u013Esk\xFD"], ["blond", "blond"], ["die Haare", "vlasy (mn. \u010D.)"], ["lange Haare", "dlh\xE9 vlasy"], ["kurze Haare", "kr\xE1tke vlasy"], ["die Augen", "o\u010Di (mn. \u010D.)"], ["blaue Augen", "modr\xE9 o\u010Di"], ["braune Augen", "hned\xE9 o\u010Di"], ["zwanzig", "20"], ["drei\xDFig", "30"], ["vierzig", "40"], ["f\xFCnfzig", "50"], ["sechzig", "60"], ["siebzig", "70"], ["achtzig", "80"], ["neunzig", "90"], ["hundert", "100"], ["tausend", "1000"]],
+      phrases: [["Hast du Geschwister?", "M\xE1\u0161 s\xFArodencov?"], ["Ja, ich habe eine Schwester.", "\xC1no, m\xE1m sestru."], ["Ich habe einen Bruder.", "M\xE1m brata."], ["Nein, ich bin Einzelkind.", "Nie, som jedin\xE1\u010Dik."], ["Wo wohnst du?", "Kde b\xFDva\u0161?"], ["Ich wohne in Bratislava.", "B\xFDvam v Bratislave."], ["Mein Bruder ist gro\xDF und sportlich.", "M\xF4j brat je vysok\xFD a \u0161portov\xFD."], ["Sie hat lange Haare.", "M\xE1 dlh\xE9 vlasy."], ["Er hat blaue Augen.", "M\xE1 modr\xE9 o\u010Di."], ["Wie geht's? \u2013 Es geht.", "Ako sa m\xE1\u0161? \u2013 Ujde to."]],
+      grammar: () => conj("Sloveso ma\u0165", "haben", [["ja m\xE1m", "ich", "hab|e"], ["ty m\xE1\u0161", "du", "ha|st"], ["on / ona m\xE1", "er / sie", "ha|t"], ["oni maj\xFA", "sie", "hab|en"]], note('Pozor, <i>du hast</i> a <i>er hat</i> str\xE1caj\xFA <b>b</b>. Nie \u201Ehabst", \u201Ehabt".') + exs([["Ich habe eine Schwester.", "M\xE1m sestru."], ["Hast du Geschwister?", "M\xE1\u0161 s\xFArodencov?"]]) + note("<i>Ich habe <b>einen</b> Bruder.</i> Pre\u010Do <b>einen</b>, sa nau\u010D\xED\u0161 v Module 3. Zatia\u013E si to zapam\xE4taj ako cel\xFA vetu.")) + conj("Sloveso b\xFDva\u0165", "wohnen", [["ja b\xFDvam", "ich", "wohn|e"], ["ty b\xFDva\u0161", "du", "wohn|st"], ["on / ona b\xFDva", "er / sie", "wohn|t"], ["oni b\xFDvaj\xFA", "sie", "wohn|en"]], "<p>Pravideln\xE9 sloveso: <b>-e, -st, -t, -en</b>. Takto sa \u010Dasuje v\xE4\u010D\u0161ina slovies!</p>") + gbox("Kde?", "Wo? + in + mesto", exs([["Wo wohnst du?", "Kde b\xFDva\u0161?"], ["Ich wohne in Ko\u0161ice.", "B\xFDvam v Ko\u0161iciach."], ["Meine Oma wohnt in Wien.", "Moja babka b\xFDva vo Viedni."]]) + note('Po <i>in</i> sa mesto <b>nemen\xED</b>: <i>in Bratislava, in Berlin</i>. \u017Diadne \u201Ev Bratislav<b>e</b>".')) + gbox("Pr\xEDdavn\xE9 men\xE1", "Er ist gro\xDF.", "<p>Po <i>sein</i> m\xE1 pr\xEDdavn\xE9 meno <b>v\u017Edy rovnak\xFD tvar</b>, pre chlapca aj diev\u010Da: <i>Er ist gro\xDF. Sie ist gro\xDF. Sie sind gro\xDF.</i></p>".concat(exs([["Mein Bruder ist klein und frech.", "M\xF4j brat je mal\xFD a drz\xFD."], ["Meine Schwester ist gro\xDF und schlank.", "Moja sestra je vysok\xE1 a \u0161t\xEDhla."]]))) + gbox("\u010C\xEDsla do 1000", "einundzwanzig", '<p>Od 21 sa \u010D\xEDsla \u010D\xEDtaj\xFA <b>odzadu</b>: najprv jednotky, potom desiatky, spojen\xE9 slovom <b>und</b>. Ako star\xE9 slovensk\xE9 \u201Ejedenadvadsa\u0165".</p>'.concat(exs([["einundzwanzig", "21 (1 + 20)"], ["zweiunddrei\xDFig", "32 (2 + 30)"], ["f\xFCnfundvierzig", "45"], ["hundertzw\xF6lf", "112"], ["zweihundert", "200"], ["tausend", "1000"]])).concat(note("<i>drei\xDFig</i> (30) sa p\xED\u0161e s <b>\xDF</b>, ostatn\xE9 desiatky maj\xFA <b>-zig</b>. Pozor: <i>sechzig</i> a <i>siebzig</i> s\xFA skr\xE1ten\xE9."))),
+      pron: ["sch\xF6n", "zw\xF6lf", "h\xF6ren", "f\xFCnf", "Tsch\xFCs", "M\xFCnchen", "Br\xFCder"],
+      ex: [
+        { t: "mc", title: "habe, hast, hat?", d: "Sloveso haben", items: [["Ich ___ einen Bruder.", ["habe", "hast", "hat"], "habe", "M\xE1m brata."], ["___ du Geschwister?", ["Habe", "Hast", "Hat"], "Hast", "M\xE1\u0161 s\xFArodencov?"], ["Lena ___ zwei Schwestern.", ["habe", "hast", "hat"], "hat", "Lena m\xE1 dve sestry."], ["Er ___ blaue Augen.", ["habe", "hast", "hat"], "hat", "M\xE1 modr\xE9 o\u010Di."], ["Du ___ lange Haare.", ["habe", "hast", "hat"], "hast", "M\xE1\u0161 dlh\xE9 vlasy."], ["Ich ___ eine Katze.", ["habe", "hast", "hat"], "habe", "M\xE1m ma\u010Dku."], ["Sie ___ kurze Haare.", ["habe", "hast", "hat"], "hat", "M\xE1 kr\xE1tke vlasy."], ["Meine Eltern ___ einen Hund.", ["hat", "haben"], "haben", "Moji rodi\u010Dia maj\xFA psa."]] },
+        { t: "mc", title: "wohnen a Wo?", d: "Kde kto b\xFDva", items: [["Wo ___ du?", ["wohne", "wohnst", "wohnt"], "wohnst", "Kde b\xFDva\u0161?"], ["Ich ___ in Bratislava.", ["wohne", "wohnst", "wohnt"], "wohne", "B\xFDvam v Bratislave."], ["Felix ___ in Berlin.", ["wohne", "wohnst", "wohnt"], "wohnt", "Felix b\xFDva v Berl\xEDne."], ["___ wohnt deine Oma? \u2013 In Ko\u0161ice.", ["Wo", "Wer", "Wie"], "Wo", "Kde b\xFDva tvoja babka?"], ["___ ist das? \u2013 Das ist mein Bruder.", ["Wo", "Wer", "Wie"], "Wer", "Kto je to?"], ["___ alt bist du?", ["Wo", "Wer", "Wie"], "Wie", "Ko\u013Eko m\xE1\u0161 rokov?"], ["Meine Tante wohnt ___ Wien.", ["in", "im", "an"], "in", "Teta b\xFDva vo Viedni."]] },
+        { t: "listen", title: "Ve\u013Ek\xE9 \u010D\xEDsla", d: "Po\u010Duje\u0161 \u010D\xEDslo, klikni na\u0148", items: [["einundzwanzig", "21"], ["zweiunddrei\xDFig", "32"], ["dreiundzwanzig", "23"], ["drei\xDFig", "30"], ["vierzig", "40"], ["f\xFCnfundvierzig", "45"], ["vierundf\xFCnfzig", "54"], ["f\xFCnfzig", "50"], ["sechzig", "60"], ["sechsundsechzig", "66"], ["siebzig", "70"], ["achtundsiebzig", "78"], ["achtzig", "80"], ["neunzig", "90"], ["hundert", "100"], ["zweihundert", "200"], ["tausend", "1000"]] },
+        { t: "listen", title: "Ak\xFD je?", d: "Pr\xEDdavn\xE9 men\xE1", items: [["gro\xDF", "ve\u013Ek\xFD"], ["klein", "mal\xFD"], ["lustig", "vtipn\xFD"], ["nett", "mil\xFD"], ["sportlich", "\u0161portov\xFD"], ["frech", "drz\xFD"], ["jung", "mlad\xFD"], ["alt", "star\xFD"], ["schlank", "\u0161t\xEDhly"], ["blaue Augen", "modr\xE9 o\u010Di"], ["lange Haare", "dlh\xE9 vlasy"], ["kurze Haare", "kr\xE1tke vlasy"]] },
+        { t: "order", title: "Poskladaj vetu", d: "S\xFArodenci a v\xFDzor", items: [["Hast du Geschwister?", "M\xE1\u0161 s\xFArodencov?"], ["Ich habe eine Schwester.", "M\xE1m sestru."], ["Wo wohnst du?", "Kde b\xFDva\u0161?"], ["Ich wohne in Bratislava.", "B\xFDvam v Bratislave."], ["Mein Bruder ist gro\xDF und sportlich.", "M\xF4j brat je vysok\xFD a \u0161portov\xFD."], ["Sie hat lange Haare.", "M\xE1 dlh\xE9 vlasy."], ["Er hat braune Augen.", "M\xE1 hned\xE9 o\u010Di."]] },
+        { t: "type", title: "Nap\xED\u0161 \u010D\xEDslo", d: "\u010C\xEDslo slovom", items: [["21", "einundzwanzig"], ["30", "drei\xDFig|dreissig"], ["45", "f\xFCnfundvierzig"], ["100", "hundert|einhundert"], ["67", "siebenundsechzig"], ["12", "zw\xF6lf"], ["99", "neunundneunzig"], ["16", "sechzehn"]] },
+        { t: "vmemory", title: "Pexeso", d: "Slov\xED\u010Dka v dvojiciach" }
+      ]
+    },
+    {
+      id: "m2l1",
+      mod: 2,
+      code: "2.1",
+      title: "Wo wohnt ihr?",
+      sk: "Kde b\xFDvate?",
+      goals: ["poveda\u0165 adresu", "miesta v meste", "wir, ihr", "es gibt + einen/eine/ein", "er/sie/es namiesto podstatn\xE9ho mena"],
+      vocab: [["die Stadt", "mesto"], ["das Dorf", "dedina"], ["die Stra\xDFe", "ulica"], ["die Adresse", "adresa"], ["die Hausnummer", "\u010D\xEDslo domu"], ["die Schule", "\u0161kola"], ["der Park", "park"], ["das Kino", "kino"], ["der Supermarkt", "supermarket"], ["die B\xE4ckerei", "pek\xE1re\u0148"], ["das Caf\xE9", "kaviare\u0148"], ["der Bahnhof", "stanica"], ["das Museum", "m\xFAzeum"], ["der Spielplatz", "ihrisko"], ["die Post", "po\u0161ta"], ["das Schwimmbad", "k\xFApalisko"], ["die Bibliothek", "kni\u017Enica"], ["der Zoo", "zoo"], ["hier", "tu"], ["dort", "tam"]],
+      phrases: [["Wo wohnt ihr?", "Kde b\xFDvate?"], ["Wir wohnen in Berlin.", "B\xFDvame v Berl\xEDne."], ["Meine Adresse ist Parkstra\xDFe f\xFCnf.", "Moja adresa je Parkstra\xDFe 5."], ["In Berlin gibt es einen Zoo.", "V Berl\xEDne je zoo."], ["Es gibt eine Schule und ein Kino.", "Je tam \u0161kola a kino."], ["Gibt es hier ein Caf\xE9?", "Je tu kaviare\u0148?"], ["Wo ist der Park? \u2013 Er ist dort.", "Kde je park? \u2013 Je tam."], ["Die Schule ist gro\xDF. Sie ist neu.", "\u0160kola je ve\u013Ek\xE1. Je nov\xE1."]],
+      grammar: () => conj("Mno\u017En\xE9 \u010D\xEDslo", "wir, ihr: sein a wohnen", [["my sme", "wir", "sind"], ["vy ste", "ihr", "seid"], ["oni s\xFA", "sie", "sind"], ["my b\xFDvame", "wir", "wohn|en"], ["vy b\xFDvate", "ihr", "wohn|t"], ["oni b\xFDvaj\xFA", "sie", "wohn|en"]], note("Zapam\xE4taj si: <b>wir</b> a <b>sie</b> maj\xFA rovnak\xFD tvar ako neur\u010Ditok (<i>wohnen</i>). <b>ihr</b> m\xE1 <b>-t</b>: <i>ihr wohnt, ihr hei\xDFt, ihr habt</i>. V\xFDnimka: <i>ihr seid</i>.")) + gbox("Je tam\u2026", "es gibt + einen / eine / ein", '<table><tbody>\n   <tr><td>der Park</td><td class="v"><button class="tsay" data-de="Es gibt einen Park.">Es gibt <span class="der">einen</span> Park.</button></td></tr>\n   <tr><td>die Schule</td><td class="v"><button class="tsay" data-de="Es gibt eine Schule.">Es gibt <span class="die">eine</span> Schule.</button></td></tr>\n   <tr><td>das Kino</td><td class="v"><button class="tsay" data-de="Es gibt ein Kino.">Es gibt <span class="das">ein</span> Kino.</button></td></tr></tbody></table>\n   '.concat(note("Po <i>es gibt</i> sa men\xED <b>len mu\u017Esk\xFD rod</b>: <i>ein</i> \u2192 <b>einen</b>. \u017Densk\xFD a stredn\xFD ost\xE1vaj\xFA."))) + gbox("Z\xE1men\xE1 namiesto mien", "der \u2192 er, die \u2192 sie, das \u2192 es", exs([["Der Park ist gro\xDF. Er ist sch\xF6n.", "Park je ve\u013Ek\xFD. (On) je pekn\xFD."], ["Die Schule ist alt. Sie ist gro\xDF.", "\u0160kola je star\xE1. (Ona) je ve\u013Ek\xE1."], ["Das Kino ist neu. Es ist toll.", "Kino je nov\xE9. (Ono) je super."]]) + note('Z\xE1meno ide pod\u013Ea <b>nemeck\xE9ho</b> rodu: <i>der Bahnhof</i> \u2192 <b>er</b>, aj ke\u010F po slovensky je to \u201Eona", stanica.')),
+      pron: ["vier", "sieben", "spielen", "Bibliothek", "drei", "mein", "hei\xDFen", "B\xE4ckerei"],
+      ex: [
+        { t: "mc", title: "wir a ihr", d: "\u010Casovanie v mno\u017Enom \u010D\xEDsle", items: [["Wir ___ in Berlin.", ["wohnen", "wohnt"], "wohnen", "B\xFDvame v Berl\xEDne."], ["Wo ___ ihr?", ["wohnen", "wohnt"], "wohnt", "Kde b\xFDvate?"], ["Wir ___ Geschwister.", ["sind", "seid"], "sind", "Sme s\xFArodenci."], ["Ihr ___ nett.", ["sind", "seid"], "seid", "Ste mil\xED."], ["Wie ___ ihr?", ["hei\xDFen", "hei\xDFt"], "hei\xDFt", "Ako sa vol\xE1te?"], ["___ wohnen in Ko\u0161ice.", ["Wir", "Ihr"], "Wir", "B\xFDvame v Ko\u0161iciach."], ["___ seid meine Freunde.", ["Wir", "Ihr"], "Ihr", "Ste moji kamar\xE1ti."], ["Wir ___ einen Hund.", ["haben", "habt"], "haben", "M\xE1me psa."], ["Habt ___ eine Katze?", ["wir", "ihr"], "ihr", "M\xE1te ma\u010Dku?"]] },
+        { t: "mc", title: "es gibt einen, eine, ein", d: "\u010Co je v meste?", items: [["In Berlin gibt es ___ Park.", ["einen", "eine", "ein"], "einen", "V Berl\xEDne je park."], ["Es gibt ___ Schule.", ["einen", "eine", "ein"], "eine", "Je tam \u0161kola."], ["Es gibt ___ Kino.", ["einen", "eine", "ein"], "ein", "Je tam kino."], ["Hier gibt es ___ Supermarkt.", ["einen", "eine", "ein"], "einen", "Tu je supermarket."], ["Gibt es hier ___ B\xE4ckerei?", ["einen", "eine", "ein"], "eine", "Je tu pek\xE1re\u0148?"], ["Es gibt ___ Museum.", ["einen", "eine", "ein"], "ein", "Je tam m\xFAzeum."], ["Es gibt ___ Bahnhof.", ["einen", "eine", "ein"], "einen", "Je tam stanica."], ["Gibt es hier ___ Caf\xE9?", ["einen", "eine", "ein"], "ein", "Je tu kaviare\u0148?"]] },
+        { t: "mc", title: "er, sie alebo es?", d: "Z\xE1meno namiesto miesta", items: [["Der Park ist gro\xDF. ___ ist sch\xF6n.", ["Er", "Sie", "Es"], "Er", "Park je ve\u013Ek\xFD. Je pekn\xFD."], ["Die Schule ist alt. ___ ist gro\xDF.", ["Er", "Sie", "Es"], "Sie", "\u0160kola je star\xE1. Je ve\u013Ek\xE1."], ["Das Kino ist neu. ___ ist toll.", ["Er", "Sie", "Es"], "Es", "Kino je nov\xE9. Je super."], ["Wo ist der Bahnhof? \u2013 ___ ist hier.", ["Er", "Sie", "Es"], "Er", "Kde je stanica? \u2013 Je tu."], ["Wo ist die Post? \u2013 ___ ist dort.", ["Er", "Sie", "Es"], "Sie", "Kde je po\u0161ta? \u2013 Je tam."], ["Wie ist das Caf\xE9? \u2013 ___ ist super.", ["Er", "Sie", "Es"], "Es", "Ak\xE1 je kaviare\u0148? \u2013 Je super."], ["Der Spielplatz ist klein. ___ ist neu.", ["Er", "Sie", "Es"], "Er", "Ihrisko je mal\xE9. Je nov\xE9."]] },
+        { t: "sort", title: "ie alebo ei?", d: "Po\u010D\xFAvaj a roztrie\u010F", cats: ["ie [\xED]", "ei [aj]"], items: [["vier", "ie [\xED]"], ["drei", "ei [aj]"], ["sieben", "ie [\xED]"], ["zwei", "ei [aj]"], ["wie", "ie [\xED]"], ["mein", "ei [aj]"], ["spielen", "ie [\xED]"], ["B\xE4ckerei", "ei [aj]"], ["Bibliothek", "ie [\xED]"], ["hei\xDFen", "ei [aj]"], ["Wien", "ie [\xED]"], ["klein", "ei [aj]"]] },
+        { t: "order", title: "Poskladaj vetu", d: "Moje mesto", items: [["Wo wohnt ihr?", "Kde b\xFDvate?"], ["Wir wohnen in Berlin.", "B\xFDvame v Berl\xEDne."], ["In Berlin gibt es einen Zoo.", "V Berl\xEDne je zoo."], ["Gibt es hier ein Kino?", "Je tu kino?"], ["Die Schule ist gro\xDF.", "\u0160kola je ve\u013Ek\xE1."], ["Wir sind Geschwister.", "Sme s\xFArodenci."]] },
+        { t: "vlisten", title: "Miesta v meste", d: "\u010Co znamen\xE1, \u010Do po\u010Duje\u0161?" },
+        { t: "vmemory", title: "Pexeso", d: "Mesto v dvojiciach" }
+      ]
+    },
+    {
+      id: "m2l2",
+      mod: 2,
+      code: "2.2",
+      title: "Besuch bei Familie Lenz",
+      sk: "N\xE1v\u0161teva u Lenzovcov",
+      goals: ["zdvorilo sa p\xFDta\u0165 (vykanie Sie)", "pon\xFAknu\u0165 n\xE1poj", "poveda\u0165, \u010Do chcem robi\u0165", "m\xF6chten, mit, ohne", "z\xE1por nicht"],
+      vocab: [["das Wasser", "voda"], ["der Saft", "d\u017E\xFAs"], ["der Apfelsaft", "jablkov\xFD d\u017E\xFAs"], ["die Milch", "mlieko"], ["der Tee", "\u010Daj"], ["der Kakao", "kakao"], ["die Limonade", "limon\xE1da"], ["der Zucker", "cukor"], ["mit", "s"], ["ohne", "bez"], ["m\xF6chten", "chcie\u0165 (zdvorilo)"], ["gern", "r\xE1d"], ["nicht", "nie (z\xE1por slovesa)"], ["spielen", "hra\u0165 sa"], ["lesen", "\u010D\xEDta\u0165"], ["malen", "ma\u013Eova\u0165"], ["schwimmen", "pl\xE1va\u0165"], ["tanzen", "tancova\u0165"], ["Musik h\xF6ren", "po\u010D\xFAva\u0165 hudbu"], ["Fu\xDFball spielen", "hra\u0165 futbal"], ["Rad fahren", "bicyklova\u0165 sa"]],
+      phrases: [["Guten Tag, Frau Lenz!", "Dobr\xFD de\u0148, pani Lenzov\xE1!"], ["M\xF6chten Sie Tee?", "D\xE1te si \u010Daj?"], ["M\xF6chtest du Saft?", "Chce\u0161 d\u017E\xFAs?"], ["Ja, gern.", "\xC1no, r\xE1d."], ["Nein, danke.", "Nie, \u010Fakujem."], ["Ich m\xF6chte Wasser, bitte.", "Chcel by som vodu, pros\xEDm."], ["Kakao mit Milch, bitte.", "Kakao s mliekom, pros\xEDm."], ["Tee ohne Zucker.", "\u010Caj bez cukru."], ["Was m\xF6chtest du machen?", "\u010Co chce\u0161 robi\u0165?"], ["Ich m\xF6chte Fu\xDFball spielen.", "Chcem hra\u0165 futbal."], ["Ich tanze nicht gern.", "Ner\xE1d tancujem."]],
+      grammar: () => gbox("Vykanie", "Sie (s ve\u013Ek\xFDm S)", "<p>Dospel\xFDm, ktor\xFDch nepozn\xE1\u0161 dobre (pani Lenzov\xE1, u\u010Dite\u013E, predava\u010D), <b>vyk\xE1\u0161</b>: <b>Sie</b>. Sloveso m\xE1 rovnak\xFD tvar ako pri <i>wir</i> a <i>sie</i> (oni).</p>".concat(exs([["Wie hei\xDFen Sie?", "Ako sa vol\xE1te?"], ["Wie hei\xDFt du?", "Ako sa vol\xE1\u0161? (tykanie)"], ["Wie geht es Ihnen?", "Ako sa m\xE1te?"], ["M\xF6chten Sie Tee?", "D\xE1te si \u010Daj?"]])).concat(note("<b>Sie</b> (vy, vykanie) sa p\xED\u0161e v\u017Edy s ve\u013Ek\xFDm S, aj uprostred vety. <b>sie</b> (ona/oni) s mal\xFDm."))) + conj("Chcel by som", "m\xF6chten", [["ja by som chcel", "ich", "m\xF6cht|e"], ["ty by si chcel", "du", "m\xF6cht|est"], ["on/ona by chcel", "er / sie", "m\xF6cht|e"], ["my by sme chceli", "wir", "m\xF6cht|en"], ["vy by ste chceli", "ihr", "m\xF6cht|et"], ["oni / Vy", "sie / Sie", "m\xF6cht|en"]], note("Pozor: <i>ich m\xF6chte</i> aj <i>er m\xF6chte</i>, obe s <b>-e</b>, bez -t!") + '<p>\u010Eal\u0161ie sloveso ide <b>na koniec vety</b>: <i>Ich <span class="mark">m\xF6chte</span> Fu\xDFball <span class="mark">spielen</span>.</i></p>') + gbox("s a bez", "mit, ohne", exs([["Kakao mit Milch", "kakao s mliekom"], ["Tee ohne Zucker", "\u010Daj bez cukru"]])) + gbox("Z\xE1por", "nicht", '<p><b>nicht</b> zapiera sloveso alebo pr\xEDdavn\xE9 meno. <b>Nein</b> je samostatn\xE1 odpove\u010F \u201Enie".</p>'.concat(exs([["Ich spiele nicht gern Fu\xDFball.", "Ner\xE1d hr\xE1m futbal."], ["M\xF6chtest du Saft? \u2013 Nein, danke.", "Chce\u0161 d\u017E\xFAs? \u2013 Nie, \u010Fakujem."], ["Das ist nicht lustig.", "To nie je vtipn\xE9."]]))),
+      pron: ["M\xF6chtest du Saft?", "Ich m\xF6chte Wasser.", "Ja, gern!"],
+      ex: [
+        { t: "mc", title: "du alebo Sie?", d: "Tyka\u0165 \u010Di vyka\u0165?", items: [["Pon\xFAka\u0161 kamar\xE1tovi d\u017E\xFAs.", ["M\xF6chtest du Saft?", "M\xF6chten Sie Saft?"], "M\xF6chtest du Saft?"], ["Pon\xFAka\u0161 pani Lenzovej \u010Daj.", ["M\xF6chtest du Tee?", "M\xF6chten Sie Tee?"], "M\xF6chten Sie Tee?"], ["P\xFDta\u0161 sa p\xE1na Lenza, ako sa vol\xE1.", ["Wie hei\xDFt du?", "Wie hei\xDFen Sie?"], "Wie hei\xDFen Sie?"], ["P\xFDta\u0161 sa nov\xE9ho spolu\u017Eiaka, ako sa vol\xE1.", ["Wie hei\xDFt du?", "Wie hei\xDFen Sie?"], "Wie hei\xDFt du?"], ["P\xFDta\u0161 sa kamar\xE1tovej babky, ako sa m\xE1.", ["Wie geht's?", "Wie geht es Ihnen?"], "Wie geht es Ihnen?"], ["P\xFDta\u0161 sa kamar\xE1tky, ako sa m\xE1.", ["Wie geht's?", "Wie geht es Ihnen?"], "Wie geht's?"], ["Pon\xFAka\u0161 p\xE1novi Lenzovi vodu.", ["M\xF6chtest du Wasser?", "M\xF6chten Sie Wasser?"], "M\xF6chten Sie Wasser?"], ["P\xFDta\u0161 sa sestry, \u010Do chce robi\u0165.", ["Was m\xF6chtest du machen?", "Was m\xF6chten Sie machen?"], "Was m\xF6chtest du machen?"]] },
+        { t: "mc", title: "m\xF6chte, m\xF6chtest\u2026", d: "Sloveso m\xF6chten", items: [["Ich ___ Kakao.", ["m\xF6chte", "m\xF6chtest", "m\xF6chten"], "m\xF6chte", "Chcel by som kakao."], ["___ du Saft?", ["M\xF6chte", "M\xF6chtest", "M\xF6chten"], "M\xF6chtest", "Chce\u0161 d\u017E\xFAs?"], ["Wir ___ Fu\xDFball spielen.", ["m\xF6chte", "m\xF6chtest", "m\xF6chten"], "m\xF6chten", "Chceme hra\u0165 futbal."], ["Felix ___ schwimmen.", ["m\xF6chte", "m\xF6chtest", "m\xF6chtet"], "m\xF6chte", "Felix chce pl\xE1va\u0165."], ["Was ___ ihr trinken?", ["m\xF6chten", "m\xF6chtet"], "m\xF6chtet", "\u010Co si d\xE1te na pitie?"], ["___ Sie Tee, Frau Lenz?", ["M\xF6chtest", "M\xF6chten"], "M\xF6chten", "D\xE1te si \u010Daj, pani Lenzov\xE1?"], ["Lena und Sofia ___ tanzen.", ["m\xF6chte", "m\xF6chten"], "m\xF6chten", "Lena a Sofia chc\xFA tancova\u0165."]] },
+        { t: "mc", title: "mit, ohne, nicht, nein", d: "Mal\xE9 slov\xED\u010Dka", items: [["Kakao ___ Milch (s mliekom)", ["mit", "ohne"], "mit", ""], ["Tee ___ Zucker (bez cukru)", ["mit", "ohne"], "ohne", ""], ["Ich spiele ___ gern Fu\xDFball.", ["nicht", "nein"], "nicht", "Ner\xE1d hr\xE1m futbal."], ["M\xF6chtest du Saft? \u2013 ___, danke.", ["Nicht", "Nein"], "Nein", "Nie, \u010Fakujem."], ["Ich schwimme ___ gern.", ["nicht", "nein"], "nicht", "Ner\xE1d pl\xE1vam."], ["Pizza ___ K\xE4se? \u2013 Nein, mit K\xE4se!", ["mit", "ohne"], "ohne", "Pizza bez syra? \u2013 Nie, so syrom!"]] },
+        { t: "order", title: "Poskladaj vetu", d: "Druh\xE9 sloveso na koniec", items: [["Ich m\xF6chte Fu\xDFball spielen.", "Chcem hra\u0165 futbal."], ["M\xF6chtest du Musik h\xF6ren?", "Chce\u0161 po\u010D\xFAva\u0165 hudbu?"], ["Wir m\xF6chten schwimmen.", "Chceme pl\xE1va\u0165."], ["M\xF6chten Sie Tee?", "D\xE1te si \u010Daj?"], ["Ich trinke Kakao mit Milch.", "Pijem kakao s mliekom."], ["Ich tanze nicht gern.", "Ner\xE1d tancujem."]] },
+        { t: "type", title: "Prelo\u017E", d: "Nap\xED\u0161 po nemecky", items: [["Chce\u0161 d\u017E\xFAs?", "M\xF6chtest du Saft?"], ["\xC1no, r\xE1d.", "Ja, gern.|Ja gern."], ["Nie, \u010Fakujem.", "Nein, danke.|Nein danke."], ["Chcel by som vodu, pros\xEDm.", "Ich m\xF6chte Wasser, bitte.|Ich m\xF6chte Wasser bitte."], ["D\xE1te si \u010Daj? (vykanie)", "M\xF6chten Sie Tee?"], ["\u010Caj bez cukru.", "Tee ohne Zucker."]] },
+        { t: "vlisten", title: "N\xE1poje a z\xE1\u013Euby", d: "\u010Co znamen\xE1, \u010Do po\u010Duje\u0161?" },
+        { t: "vmemory", title: "Pexeso", d: "Slov\xED\u010Dka v dvojiciach" }
+      ]
+    },
+    {
+      id: "m2l3",
+      mod: 2,
+      code: "2.3",
+      title: "Das Haus von Familie Lenz",
+      sk: "Dom Lenzovcov",
+      goals: ["op\xEDsa\u0165 dom a izbu", "n\xE1bytok", "farby", "Was?, kein/keine", "aber"],
+      vocab: [["das Haus", "dom"], ["die Wohnung", "byt"], ["das Zimmer", "izba"], ["das Wohnzimmer", "ob\xFDva\u010Dka"], ["das Schlafzimmer", "sp\xE1l\u0148a"], ["das Kinderzimmer", "detsk\xE1 izba"], ["die K\xFCche", "kuchy\u0148a"], ["das Bad", "k\xFApe\u013E\u0148a"], ["der Garten", "z\xE1hrada"], ["der Balkon", "balk\xF3n"], ["der Tisch", "st\xF4l"], ["der Stuhl", "stoli\u010Dka"], ["der Sessel", "kreslo"], ["das Bett", "poste\u013E"], ["der Schrank", "skri\u0148a"], ["das Sofa", "gau\u010D"], ["die Lampe", "lampa"], ["das Regal", "polica"], ["der Teppich", "koberec"], ["rot", "\u010Derven\xFD"], ["blau", "modr\xFD"], ["gelb", "\u017Elt\xFD"], ["gr\xFCn", "zelen\xFD"], ["wei\xDF", "biely"], ["schwarz", "\u010Dierny"], ["braun", "hned\xFD"], ["grau", "siv\xFD"], ["rosa", "ru\u017Eov\xFD"], ["lila", "fialov\xFD"], ["orange", "oran\u017Eov\xFD"], ["aber", "ale"]],
+      phrases: [["Was ist das?", "\u010Co je to?"], ["Das ist ein Tisch.", "To je st\xF4l."], ["Ist das ein Stuhl?", "Je to stoli\u010Dka?"], ["Nein, das ist kein Stuhl. Das ist ein Sessel.", "Nie, to nie je stoli\u010Dka. To je kreslo."], ["Mein Zimmer ist klein, aber sch\xF6n.", "Moja izba je mal\xE1, ale pekn\xE1."], ["Das Sofa ist rot.", "Gau\u010D je \u010Derven\xFD."], ["Welche Farbe hat der Schrank?", "Ak\xFA farbu m\xE1 skri\u0148a?"], ["Der Schrank ist wei\xDF.", "Skri\u0148a je biela."], ["Das Haus hat einen Garten.", "Dom m\xE1 z\xE1hradu."]],
+      grammar: () => gbox("Ot\xE1zka", "Was? alebo Wer?", exs([["Was ist das? \u2013 Das ist ein Bett.", "\u010Co je to? (vec)"], ["Wer ist das? \u2013 Das ist Frau Lenz.", "Kto je to? (osoba)"]])) + gbox("Z\xE1por podstatn\xE9ho mena", "kein / keine", '<table><tbody>\n   <tr><td>der Tisch</td><td class="v"><button class="tsay" data-de="ein Tisch, kein Tisch"><span class="der">ein</span> \u2192 <span class="der">kein</span> Tisch</button></td></tr>\n   <tr><td>die Lampe</td><td class="v"><button class="tsay" data-de="eine Lampe, keine Lampe"><span class="die">eine</span> \u2192 <span class="die">keine</span> Lampe</button></td></tr>\n   <tr><td>das Bett</td><td class="v"><button class="tsay" data-de="ein Bett, kein Bett"><span class="das">ein</span> \u2192 <span class="das">kein</span> Bett</button></td></tr></tbody></table>\n   <p><b>kein</b> = \u201E\u017Eiadny, nie je". Sta\u010D\xED prida\u0165 <b>k</b> pred <i>ein</i>.</p>\n   '.concat(note("<b>nicht</b> alebo <b>kein</b>? Pred podstatn\xFDm menom s <i>ein/eine</i> je <b>kein</b>: <i>Das ist kein Sofa.</i> Pri pr\xEDdavnom mene alebo slovese je <b>nicht</b>: <i>Das Sofa ist nicht rot.</i>"))) + gbox("Spojka", "aber = ale", exs([["Mein Zimmer ist klein, aber sch\xF6n.", "Moja izba je mal\xE1, ale pekn\xE1."], ["Das Haus ist alt, aber gro\xDF.", "Dom je star\xFD, ale ve\u013Ek\xFD."]]) + note("Pred <i>aber</i> p\xED\u0161eme <b>\u010Diarku</b>, rovnako ako v sloven\u010Dine.")) + gbox("V\xFDslovnos\u0165", "h na za\u010Diatku sa \u010D\xEDta", "<p><b>h</b> na za\u010Diatku slova vyslov\xED\u0161 ako jemn\xFD v\xFDdych: <i>Haus, Hund, hei\xDFen</i>. Po samohl\xE1ske sa ne\u010D\xEDta, len ju pred\u013A\u017Ei: <i>Uhr, zehn</i>.</p>"),
+      pron: ["Haus", "Hund", "hier", "hei\xDFen", "Uhr", "zehn", "Kuh"],
+      ex: [
+        { t: "colors", title: "Farby", d: "Ak\xFA farbu vid\xED\u0161?" },
+        { t: "mc", title: "kein alebo keine?", d: "Z\xE1por s podstatn\xFDm menom", items: [["Das ist ___ Stuhl. Das ist ein Sessel.", ["kein", "keine"], "kein", "To nie je stoli\u010Dka. To je kreslo."], ["Das ist ___ Lampe.", ["kein", "keine"], "keine", "To nie je lampa."], ["Das ist ___ Bett. Das ist ein Sofa.", ["kein", "keine"], "kein", "To nie je poste\u013E. To je gau\u010D."], ["Das ist ___ K\xFCche. Das ist ein Bad.", ["kein", "keine"], "keine", "To nie je kuchy\u0148a. To je k\xFApe\u013E\u0148a."], ["Das ist ___ Tisch.", ["kein", "keine"], "kein", "To nie je st\xF4l."], ["Das ist ___ Wohnung. Das ist ein Haus.", ["kein", "keine"], "keine", "To nie je byt. To je dom."], ["Das ist ___ Regal. Das ist ein Schrank.", ["kein", "keine"], "kein", "To nie je polica. To je skri\u0148a."]] },
+        { t: "mc", title: "nicht alebo kein?", d: "Ktor\xFD z\xE1por?", items: [["Das Zimmer ist ___ gro\xDF.", ["nicht", "kein"], "nicht", "Izba nie je ve\u013Ek\xE1."], ["Das ist ___ Sofa.", ["nicht", "kein"], "kein", "To nie je gau\u010D."], ["Der Schrank ist ___ wei\xDF. Er ist braun.", ["nicht", "kein"], "nicht", "Skri\u0148a nie je biela. Je hned\xE1."], ["Das ist ___ Garten. Das ist ein Park.", ["nicht", "kein"], "kein", "To nie je z\xE1hrada. To je park."], ["Mein Zimmer ist ___ sch\xF6n.", ["nicht", "kein"], "nicht", "Moja izba nie je pekn\xE1."], ["Das ist ___ Lampe.", ["nicht", "keine"], "keine", "To nie je lampa."]] },
+        { t: "sort", title: "Miestnos\u0165 alebo n\xE1bytok?", d: "Roztrie\u010F slov\xE1", cats: ["miestnos\u0165", "n\xE1bytok"], items: [["die K\xFCche", "miestnos\u0165"], ["der Tisch", "n\xE1bytok"], ["das Bad", "miestnos\u0165"], ["das Bett", "n\xE1bytok"], ["das Wohnzimmer", "miestnos\u0165"], ["der Schrank", "n\xE1bytok"], ["das Kinderzimmer", "miestnos\u0165"], ["das Sofa", "n\xE1bytok"], ["das Schlafzimmer", "miestnos\u0165"], ["der Stuhl", "n\xE1bytok"], ["das Regal", "n\xE1bytok"], ["der Sessel", "n\xE1bytok"]] },
+        { t: "mc", title: "Was, Wer, und, aber", d: "Ot\xE1zky a spojky", items: [["___ ist das? \u2013 Das ist ein Bett.", ["Was", "Wer"], "Was", "\u010Co je to?"], ["___ ist das? \u2013 Das ist Frau Lenz.", ["Was", "Wer"], "Wer", "Kto je to?"], ["Mein Zimmer ist klein, ___ sch\xF6n.", ["aber", "und"], "aber", "mal\xE1, ale pekn\xE1"], ["Das Sofa ist rot ___ gro\xDF.", ["aber", "und"], "und", "\u010Derven\xFD a ve\u013Ek\xFD"], ["___ ist das? \u2013 Das ist mein Bruder.", ["Was", "Wer"], "Wer", "Kto je to?"], ["___ ist das? \u2013 Das ist ein Regal.", ["Was", "Wer"], "Was", "\u010Co je to?"]] },
+        { t: "vlisten", title: "Dom a n\xE1bytok", d: "\u010Co znamen\xE1, \u010Do po\u010Duje\u0161?" },
+        { t: "vmemory", title: "Pexeso", d: "Slov\xED\u010Dka v dvojiciach" }
+      ]
+    },
+    {
+      id: "m3l1",
+      mod: 3,
+      code: "3.1",
+      title: "Minka, unsere Katze",
+      sk: "Minka, na\u0161a ma\u010Dka",
+      goals: ["dom\xE1ce zvierat\xE1", "\u010Do m\xE1m r\xE1d (m\xF6gen)", "einen / keinen (4. p\xE1d)", "mno\u017En\xE9 \u010D\xEDslo"],
+      vocab: [["das Haustier", "dom\xE1ce zviera"], ["die Katze", "ma\u010Dka"], ["der Hund", "pes"], ["das Pferd", "k\xF4\u0148"], ["der Hamster", "\u0161kre\u010Dok"], ["das Meerschweinchen", "morsk\xE9 prasiatko"], ["der Vogel", "vt\xE1k"], ["der Wellensittich", "andulka"], ["der Fisch", "ryba"], ["die Maus", "my\u0161"], ["das Kaninchen", "kr\xE1lik"], ["die Schildkr\xF6te", "korytna\u010Dka"], ["m\xF6gen", "ma\u0165 r\xE1d"], ["unser / unsere", "n\xE1\u0161 / na\u0161a"], ["s\xFC\xDF", "zlat\xFD, sladk\xFD"], ["dick", "tu\u010Dn\xFD"], ["schnell", "r\xFDchly"]],
+      phrases: [["Hast du ein Haustier?", "M\xE1\u0161 dom\xE1ce zviera?"], ["Ja, ich habe einen Hund.", "\xC1no, m\xE1m psa."], ["Nein, ich habe kein Haustier.", "Nie, nem\xE1m dom\xE1ce zviera."], ["Ich habe keinen Hamster.", "Nem\xE1m \u0161kre\u010Dka."], ["Unsere Katze hei\xDFt Minka.", "Na\u0161a ma\u010Dka sa vol\xE1 Minka."], ["Ich mag Katzen.", "M\xE1m r\xE1d ma\u010Dky."], ["Magst du Hunde?", "M\xE1\u0161 r\xE1d psy?"], ["Ich habe zwei Fische.", "M\xE1m dve ryby."]],
+      grammar: () => gbox("4. p\xE1d (akuzat\xEDv)", "Ich habe einen Hund.", '<p>Po slovese <i>haben</i> (m\xE1m koho/\u010Do?) sa men\xED <b>len mu\u017Esk\xFD rod</b>, rovnako ako pri <i>es gibt</i>:</p><table><tbody>\n   <tr><td>der Hund</td><td class="v"><button class="tsay" data-de="Ich habe einen Hund. Ich habe keinen Hund.">Ich habe <span class="der">einen / keinen</span> Hund.</button></td></tr>\n   <tr><td>die Katze</td><td class="v"><button class="tsay" data-de="Ich habe eine Katze. Ich habe keine Katze.">Ich habe <span class="die">eine / keine</span> Katze.</button></td></tr>\n   <tr><td>das Pferd</td><td class="v"><button class="tsay" data-de="Ich habe ein Pferd. Ich habe kein Pferd.">Ich habe <span class="das">ein / kein</span> Pferd.</button></td></tr>\n   <tr><td>mno\u017En\xE9 \u010D.</td><td class="v"><button class="tsay" data-de="Ich habe Fische. Ich habe keine Fische.">Ich habe \u2013 / keine Fische.</button></td></tr></tbody></table>') + gbox("Mno\u017En\xE9 \u010D\xEDslo", "eine Katze \u2192 zwei Katzen", "<p>Nemeck\xE9 mno\u017En\xE9 \u010D\xEDslo m\xE1 viac koncoviek. U\u010D sa ho spolu so slovom:</p>".concat(exs([["die Katze, die Katzen", "-n"], ["die Schildkr\xF6te, die Schildkr\xF6ten", "-n"], ["der Hund, die Hunde", "-e"], ["das Pferd, die Pferde", "-e"], ["der Fisch, die Fische", "-e"], ["die Maus, die M\xE4use", "prehl\xE1ska + -e"], ["der Vogel, die V\xF6gel", "prehl\xE1ska"], ["der Hamster, die Hamster", "bez zmeny"], ["das Kaninchen, die Kaninchen", "bez zmeny (-chen)"]])).concat(note("Slov\xE1 na <b>-chen</b> a <b>-er</b> sa v mno\u017Enom \u010D\xEDsle \u010Dasto nemenia."))) + conj("Ma\u0165 r\xE1d", "m\xF6gen", [["ja m\xE1m r\xE1d", "ich", "mag"], ["ty m\xE1\u0161 r\xE1d", "du", "magst"], ["on/ona m\xE1 r\xE1d", "er / sie", "mag"], ["my m\xE1me radi", "wir", "m\xF6gen"], ["vy m\xE1te radi", "ihr", "m\xF6gt"], ["oni maj\xFA radi", "sie", "m\xF6gen"]], note("<i>ich mag</i> aj <i>er mag</i> s\xFA rovnak\xE9, bez koncovky!")) + gbox("V\xFDslovnos\u0165", "koncov\xE9 -e a -en", "<p>Koncov\xE9 <b>-e</b> a <b>-en</b> vyslovujeme slabo, skoro ne\u010Dujne: <i>Katze, Katzen, haben</i>.</p>"),
+      pron: ["Katze", "Katzen", "Schildkr\xF6te", "haben", "m\xF6gen", "Hunde"],
+      ex: [
+        { t: "mc", title: "einen, eine, ein?", d: "Ich habe\u2026", items: [["Ich habe ___ Hund.", ["einen", "eine", "ein"], "einen", "M\xE1m psa."], ["Ich habe ___ Katze.", ["einen", "eine", "ein"], "eine", "M\xE1m ma\u010Dku."], ["Hast du ___ Pferd?", ["einen", "eine", "ein"], "ein", "M\xE1\u0161 ko\u0148a?"], ["Lena hat ___ Hamster.", ["einen", "eine", "ein"], "einen", "Lena m\xE1 \u0161kre\u010Dka."], ["Ich habe ___ Haustier.", ["keinen", "keine", "kein"], "kein", "Nem\xE1m dom\xE1ce zviera."], ["Ich habe ___ Vogel.", ["keinen", "keine", "kein"], "keinen", "Nem\xE1m vt\xE1ka."], ["Wir haben ___ Schildkr\xF6te.", ["einen", "eine", "ein"], "eine", "M\xE1me korytna\u010Dku."], ["Hast du ___ Kaninchen?", ["einen", "eine", "ein"], "ein", "M\xE1\u0161 kr\xE1lika?"], ["Felix hat ___ Katze.", ["keinen", "keine", "kein"], "keine", "Felix nem\xE1 ma\u010Dku."]] },
+        { t: "mc", title: "Mno\u017En\xE9 \u010D\xEDslo", d: "jeden \u2192 dva", items: [["eine Katze \u2013 zwei ___", ["Katzen", "Katze", "Katzes"], "Katzen", ""], ["ein Hund \u2013 zwei ___", ["Hunde", "Hunds", "Hunden"], "Hunde", ""], ["eine Maus \u2013 zwei ___", ["M\xE4use", "Mause", "M\xE4usen"], "M\xE4use", ""], ["ein Vogel \u2013 zwei ___", ["V\xF6gel", "Vogels", "Vogeln"], "V\xF6gel", ""], ["ein Hamster \u2013 zwei ___", ["Hamster", "Hamsters", "Hamstern"], "Hamster", ""], ["ein Pferd \u2013 zwei ___", ["Pferde", "Pferds", "Pferden"], "Pferde", ""], ["ein Fisch \u2013 zwei ___", ["Fische", "Fischs", "Fischen"], "Fische", ""], ["eine Schildkr\xF6te \u2013 zwei ___", ["Schildkr\xF6ten", "Schildkr\xF6tes", "Schildkr\xF6te"], "Schildkr\xF6ten", ""], ["ein Kaninchen \u2013 zwei ___", ["Kaninchen", "Kaninchens", "Kaninchenen"], "Kaninchen", ""]] },
+        { t: "mc", title: "mag, magst, m\xF6gen?", d: "Sloveso m\xF6gen", items: [["Ich ___ Katzen.", ["mag", "magst", "m\xF6gen"], "mag", "M\xE1m r\xE1d ma\u010Dky."], ["___ du Hunde?", ["Mag", "Magst", "M\xF6gen"], "Magst", "M\xE1\u0161 r\xE1d psy?"], ["Wir ___ Pferde.", ["mag", "m\xF6gen", "m\xF6gt"], "m\xF6gen", "M\xE1me radi kone."], ["Lena ___ Hamster.", ["mag", "magst", "m\xF6gen"], "mag", "Lena m\xE1 rada \u0161kre\u010Dky."], ["Ihr ___ Tiere.", ["m\xF6gen", "m\xF6gt"], "m\xF6gt", "M\xE1te radi zvierat\xE1."], ["Meine Eltern ___ keine M\xE4use.", ["mag", "m\xF6gen"], "m\xF6gen", "Moji rodi\u010Dia nemaj\xFA radi my\u0161i."]] },
+        { t: "order", title: "Poskladaj vetu", d: "Moje zviera", items: [["Hast du ein Haustier?", "M\xE1\u0161 dom\xE1ce zviera?"], ["Ich habe einen Hund.", "M\xE1m psa."], ["Unsere Katze hei\xDFt Minka.", "Na\u0161a ma\u010Dka sa vol\xE1 Minka."], ["Ich mag Pferde.", "M\xE1m r\xE1d kone."], ["Ich habe kein Haustier.", "Nem\xE1m dom\xE1ce zviera."], ["Magst du Katzen?", "M\xE1\u0161 r\xE1d ma\u010Dky?"]] },
+        { t: "type", title: "Prelo\u017E", d: "Nap\xED\u0161 po nemecky", items: [["M\xE1m psa.", "Ich habe einen Hund."], ["Nem\xE1m ma\u010Dku.", "Ich habe keine Katze."], ["M\xE1m r\xE1d kone.", "Ich mag Pferde."], ["M\xE1\u0161 dom\xE1ce zviera?", "Hast du ein Haustier?"], ["Nem\xE1m \u0161kre\u010Dka.", "Ich habe keinen Hamster."]] },
+        { t: "vlisten", title: "Zvierat\xE1", d: "\u010Co znamen\xE1, \u010Do po\u010Duje\u0161?" },
+        { t: "vmemory", title: "Pexeso", d: "Zvierat\xE1 v dvojiciach" }
+      ]
+    },
+    {
+      id: "m3l2",
+      mod: 3,
+      code: "3.2",
+      title: "Unser Stadtteil",
+      sk: "Na\u0161a \u0161tvr\u0165",
+      goals: ["odkia\u013E som a akou re\u010Dou hovor\xEDm", "kam idem", "woher, wohin, aus, in", "sprechen, treffen, essen", "zlo\u017Een\xE9 slov\xE1, man"],
+      vocab: [["der Stadtteil", "\u0161tvr\u0165"], ["Woher?", "Odkia\u013E?"], ["Wohin?", "Kam?"], ["kommen aus", "by\u0165 (poch\xE1dza\u0165) z"], ["sprechen", "hovori\u0165"], ["treffen", "stretn\xFA\u0165"], ["essen", "jes\u0165"], ["die Sprache", "jazyk, re\u010D"], ["Deutschland", "Nemecko"], ["\xD6sterreich", "Rak\xFAsko"], ["die Schweiz", "\u0160vaj\u010Diarsko"], ["die Slowakei", "Slovensko"], ["Tschechien", "\u010Cesko"], ["Polen", "Po\u013Esko"], ["Ungarn", "Ma\u010Farsko"], ["Italien", "Taliansko"], ["Deutsch", "nem\u010Dina"], ["Slowakisch", "sloven\u010Dina"], ["Englisch", "angli\u010Dtina"], ["ein bisschen", "trochu"], ["das Eis", "zmrzlina"]],
+      phrases: [["Woher kommst du?", "Odkia\u013E si?"], ["Ich komme aus der Slowakei.", "Som zo Slovenska."], ["Felix kommt aus Deutschland.", "Felix je z Nemecka."], ["Welche Sprachen sprichst du?", "Ak\xFDmi jazykmi hovor\xED\u0161?"], ["Ich spreche Slowakisch und ein bisschen Deutsch.", "Hovor\xEDm po slovensky a trochu po nemecky."], ["Wohin gehst du?", "Kam ide\u0161?"], ["Ich gehe in den Park.", "Idem do parku."], ["Wir treffen Freunde.", "Stret\xE1vame kamar\xE1tov."], ["Lena isst ein Eis.", "Lena je zmrzlinu."], ["Hier spricht man Deutsch.", "Tu sa hovor\xED po nemecky."]],
+      grammar: () => gbox("Tri ot\xE1zky", "Wo? Woher? Wohin?", '<table><tbody>\n   <tr><td>Kde?</td><td class="v"><button class="tsay" data-de="Wo wohnst du? In \u017Dilina.">Wo wohnst du? \u2013 In \u017Dilina.</button></td></tr>\n   <tr><td>Odkia\u013E?</td><td class="v"><button class="tsay" data-de="Woher kommst du? Aus der Slowakei.">Woher kommst du? \u2013 Aus der Slowakei.</button></td></tr>\n   <tr><td>Kam?</td><td class="v"><button class="tsay" data-de="Wohin gehst du? In den Park.">Wohin gehst du? \u2013 In den Park.</button></td></tr></tbody></table>\n   '.concat(note("V\xE4\u010D\u0161ina kraj\xEDn je bez \u010Dlena: <i>aus Deutschland, aus \xD6sterreich</i>. Niektor\xE9 maj\xFA \u010Dlen <b>die</b> a potom je <b>aus der</b>: <i>aus der Slowakei, aus der Schweiz, aus der T\xFCrkei</i>."))) + conj("Nepravideln\xE9 sloves\xE1", "sprechen, treffen, essen", [["hovor\xEDm", "ich", "spreche"], ["hovor\xED\u0161", "du", "spr|ichst"], ["hovor\xED", "er / sie", "spr|icht"], ["stretne\u0161", "du", "tr|iffst"], ["stretne", "er / sie", "tr|ifft"], ["je\u0161", "du", "|isst"], ["je", "er / sie", "|isst"]], note("Pri t\xFDchto sloves\xE1ch sa v <i>du</i> a <i>er/sie/es</i> men\xED <b>e \u2192 i</b>. Pri <i>ich, wir, ihr, sie</i> ost\xE1va e: <i>wir sprechen, wir essen</i>.")) + gbox("Zlo\u017Een\xE9 slov\xE1", "der Sport + der Platz = der Sportplatz", "<p>Nem\u010Dina rada sp\xE1ja slov\xE1. \u010Clen je v\u017Edy pod\u013Ea <b>posledn\xE9ho</b> slova:</p>".concat(exs([["die Stadt + der Teil = der Stadtteil", "\u0161tvr\u0165"], ["die Schule + die Tasche = die Schultasche", "\u0161kolsk\xE1 ta\u0161ka"], ["die Kinder + das Zimmer = das Kinderzimmer", "detsk\xE1 izba"], ["der Apfel + der Saft = der Apfelsaft", "jablkov\xFD d\u017E\xFAs"]])).concat(note("Pr\xEDzvuk je na <b>prvom</b> slove: <i><b>Sport</b>platz, <b>Kin</b>derzimmer</i>."))) + gbox("Z\xE1meno man", "Hier spricht man Deutsch.", '<p><b>man</b> = \u201Esa" (v\u0161eobecne \u013Eudia). Sloveso je ako pri <i>er</i>: <i>man spricht, man isst, man sagt</i>.</p>'),
+      pron: ["Sportplatz", "Spielplatz", "Kinderzimmer", "Apfelsaft", "Stadtteil"],
+      ex: [
+        { t: "mc", title: "Wo, woher, wohin?", d: "Kde, odkia\u013E, kam", items: [["___ kommst du? \u2013 Aus der Slowakei.", ["Wo", "Woher", "Wohin"], "Woher", "Odkia\u013E si?"], ["___ wohnst du? \u2013 In \u017Dilina.", ["Wo", "Woher", "Wohin"], "Wo", "Kde b\xFDva\u0161?"], ["___ gehst du? \u2013 Ins Kino.", ["Wo", "Woher", "Wohin"], "Wohin", "Kam ide\u0161? \u2013 Do kina."], ["___ kommt Felix? \u2013 Aus Deutschland.", ["Wo", "Woher", "Wohin"], "Woher", "Odkia\u013E je Felix?"], ["___ ist die Schule? \u2013 Hier.", ["Wo", "Woher", "Wohin"], "Wo", "Kde je \u0161kola?"], ["___ geht ihr? \u2013 In den Park.", ["Wo", "Woher", "Wohin"], "Wohin", "Kam idete?"]] },
+        { t: "listen", title: "Krajiny", d: "Po\u010Duje\u0161 krajinu, n\xE1jdi ju", items: [["Deutschland", "Nemecko"], ["\xD6sterreich", "Rak\xFAsko"], ["die Schweiz", "\u0160vaj\u010Diarsko"], ["die Slowakei", "Slovensko"], ["Polen", "Po\u013Esko"], ["Italien", "Taliansko"], ["Spanien", "\u0160panielsko"], ["Frankreich", "Franc\xFAzsko"], ["England", "Anglicko"], ["die T\xFCrkei", "Turecko"], ["Tschechien", "\u010Cesko"], ["Ungarn", "Ma\u010Farsko"]] },
+        { t: "mc", title: "Kde sa hovor\xED \u010D\xEDm?", d: "Krajiny a jazyky", items: [["In \xD6sterreich spricht man ___.", ["Deutsch", "\xD6sterreichisch", "Englisch"], "Deutsch", "V Rak\xFAsku sa hovor\xED po nemecky!"], ["In der Slowakei spricht man ___.", ["Slowakisch", "Tschechisch", "Polnisch"], "Slowakisch", ""], ["In Frankreich spricht man ___.", ["Franz\xF6sisch", "Frankisch", "Spanisch"], "Franz\xF6sisch", ""], ["In Italien spricht man ___.", ["Italienisch", "Spanisch", "Englisch"], "Italienisch", ""], ["In England spricht man ___.", ["Englisch", "Englandisch", "Deutsch"], "Englisch", ""], ["In Polen spricht man ___.", ["Polnisch", "Polisch", "Tschechisch"], "Polnisch", ""], ["In Spanien spricht man ___.", ["Spanisch", "Spanienisch", "Italienisch"], "Spanisch", ""]] },
+        { t: "mc", title: "e \u2192 i", d: "sprechen, treffen, essen", items: [["Du ___ gut Deutsch.", ["sprichst", "sprechst", "spricht"], "sprichst", "Hovor\xED\u0161 dobre po nemecky."], ["Er ___ Englisch.", ["spricht", "sprecht", "sprichst"], "spricht", "Hovor\xED po anglicky."], ["Ich ___ Slowakisch.", ["spreche", "spriche", "sprecht"], "spreche", "Hovor\xEDm po slovensky."], ["Lena ___ ein Eis.", ["isst", "esst", "esse"], "isst", "Lena je zmrzlinu."], ["Wir ___ Freunde im Park.", ["treffen", "trifft", "treffst"], "treffen", "Stret\xE1vame kamar\xE1tov v parku."], ["Felix ___ Lena.", ["trifft", "treffet", "treffe"], "trifft", "Felix stretne Lenu."], ["Was ___ du gern?", ["isst", "esst", "essst"], "isst", "\u010Co r\xE1d je\u0161?"]] },
+        { t: "mc", title: "\u010Clen zlo\u017Een\xE9ho slova", d: "Pod\u013Ea posledn\xE9ho slova!", items: [["___ Sportplatz (der Sport + der Platz)", ["der", "die", "das"], "der", ""], ["___ Stadtteil (die Stadt + der Teil)", ["der", "die", "das"], "der", ""], ["___ Schultasche (die Schule + die Tasche)", ["der", "die", "das"], "die", ""], ["___ Kinderzimmer (die Kinder + das Zimmer)", ["der", "die", "das"], "das", ""], ["___ Apfelsaft (der Apfel + der Saft)", ["der", "die", "das"], "der", ""], ["___ Hausnummer (das Haus + die Nummer)", ["der", "die", "das"], "die", ""], ["___ Schwimmbad (schwimmen + das Bad)", ["der", "die", "das"], "das", ""]] },
+        { t: "type", title: "Prelo\u017E", d: "Nap\xED\u0161 po nemecky", items: [["Odkia\u013E si?", "Woher kommst du?"], ["Som zo Slovenska.", "Ich komme aus der Slowakei."], ["Hovor\xEDm po slovensky a po nemecky.", "Ich spreche Slowakisch und Deutsch."], ["Kam ide\u0161?", "Wohin gehst du?"], ["Lena je zmrzlinu.", "Lena isst ein Eis."]] },
+        { t: "vmemory", title: "Pexeso", d: "Slov\xED\u010Dka v dvojiciach" }
+      ]
+    },
+    {
+      id: "m3l3",
+      mod: 3,
+      code: "3.3",
+      title: "Was machst du gern?",
+      sk: "\u010Co r\xE1d rob\xED\u0161?",
+      goals: ["dni v t\xFD\u017Edni", "vo\u013En\xFD \u010Das", "dohodn\xFA\u0165 sa na stretnut\xED", "k\xF6nnen, m\xFCssen", "Am Montag spiele ich\u2026"],
+      vocab: [["der Montag", "pondelok"], ["der Dienstag", "utorok"], ["der Mittwoch", "streda"], ["der Donnerstag", "\u0161tvrtok"], ["der Freitag", "piatok"], ["der Samstag", "sobota"], ["der Sonntag", "nede\u013Ea"], ["das Wochenende", "v\xEDkend"], ["am Nachmittag", "poobede"], ["am Abend", "ve\u010Der"], ["k\xF6nnen", "vedie\u0165, m\xF4c\u0165"], ["m\xFCssen", "musie\u0165"], ["die Hausaufgaben", "dom\xE1ce \xFAlohy"], ["Freunde treffen", "stretn\xFA\u0165 kamar\xE1tov"], ["ins Kino gehen", "\xEDs\u0165 do kina"], ["Gitarre spielen", "hra\u0165 na gitare"], ["reiten", "jazdi\u0165 na koni"], ["lernen", "u\u010Di\u0165 sa"], ["die Zeit", "\u010Das"], ["leider", "\u017Eia\u013E"], ["klar", "jasn\xE9"]],
+      phrases: [["Was machst du gern?", "\u010Co r\xE1d rob\xED\u0161?"], ["Ich lese gern.", "R\xE1d \u010D\xEDtam."], ["Kannst du schwimmen?", "Vie\u0161 pl\xE1va\u0165?"], ["Ja, ich kann gut schwimmen.", "\xC1no, viem dobre pl\xE1va\u0165."], ["Ich muss Hausaufgaben machen.", "Mus\xEDm si robi\u0165 \xFAlohy."], ["Am Montag spiele ich Fu\xDFball.", "V pondelok hr\xE1m futbal."], ["Hast du am Samstag Zeit?", "M\xE1\u0161 v sobotu \u010Das?"], ["Ja, klar!", "\xC1no, jasn\xE9!"], ["Leider nicht.", "\u017Dia\u013E nie."], ["Treffen wir uns am Nachmittag im Park?", "Stretneme sa poobede v parku?"]],
+      grammar: () => conj("Mod\xE1lne sloves\xE1", "k\xF6nnen (vedie\u0165/m\xF4c\u0165)", [["viem", "ich", "kann"], ["vie\u0161", "du", "kann|st"], ["vie", "er / sie", "kann"], ["vieme", "wir", "k\xF6nn|en"], ["viete", "ihr", "k\xF6nn|t"], ["vedia", "sie", "k\xF6nn|en"]]) + conj("Mod\xE1lne sloves\xE1", "m\xFCssen (musie\u0165)", [["mus\xEDm", "ich", "muss"], ["mus\xED\u0161", "du", "muss|t"], ["mus\xED", "er / sie", "muss"], ["mus\xEDme", "wir", "m\xFCss|en"], ["mus\xEDte", "ihr", "m\xFCss|t"], ["musia", "sie", "m\xFCss|en"]], '<p>Rovnako ako pri <i>m\xF6chten</i>: druh\xE9 sloveso ide <b>na koniec</b>. <i>Ich <span class="mark">kann</span> gut <span class="mark">schwimmen</span>.</i></p>' + note("<i>ich</i> a <i>er</i> s\xFA bez koncovky: <i>ich kann, er kann, ich muss, er muss</i>. Prehl\xE1ska \xFC/\xF6 je len v mno\u017Enom \u010D\xEDsle.")) + gbox("Slovosled", "Am Montag spiele ich Fu\xDFball.", "<p>Sloveso je v nemeckej vete <b>v\u017Edy na 2. mieste</b>. Ke\u010F za\u010Dne\u0161 \u010Dasom, osoba ide <b>za sloveso</b>:</p>".concat(exs([["Ich spiele am Montag Fu\xDFball.", "ja \xB7 hr\xE1m \xB7 \u2026"], ["Am Montag spiele ich Fu\xDFball.", "v pondelok \xB7 hr\xE1m \xB7 ja \xB7 \u2026"]])).concat(note("Pri d\u0148och: <b>am</b> Montag, <b>am</b> Wochenende, <b>am</b> Abend."))) + conj("e \u2192 ie, a \u2192 \xE4", "lesen, fahren", [["\u010D\xEDta\u0161", "du", "l|iest"], ["\u010D\xEDta", "er / sie", "l|iest"], ["ide\u0161 (autom, bicyklom)", "du", "f|\xE4hrst"], ["ide", "er / sie", "f|\xE4hrt"]]),
+      pron: ["Montag", "Mittwoch", "Samstag", "Sonntag", "lesen", "liest", "fahren", "f\xE4hrt"],
+      ex: [
+        { t: "listen", title: "Dni v t\xFD\u017Edni", d: "Po\u010Duje\u0161 de\u0148, n\xE1jdi ho", items: [["Montag", "pondelok"], ["Dienstag", "utorok"], ["Mittwoch", "streda"], ["Donnerstag", "\u0161tvrtok"], ["Freitag", "piatok"], ["Samstag", "sobota"], ["Sonntag", "nede\u013Ea"], ["das Wochenende", "v\xEDkend"]] },
+        { t: "mc", title: "kann, muss\u2026", d: "k\xF6nnen a m\xFCssen", items: [["Ich ___ gut schwimmen.", ["kann", "kannst", "k\xF6nnen"], "kann", "Viem dobre pl\xE1va\u0165."], ["___ du Gitarre spielen?", ["Kann", "Kannst", "K\xF6nnt"], "Kannst", "Vie\u0161 hra\u0165 na gitare?"], ["Wir ___ heute nicht kommen.", ["kann", "k\xF6nnen", "k\xF6nnt"], "k\xF6nnen", "Dnes nem\xF4\u017Eeme pr\xEDs\u0165."], ["Ich ___ Hausaufgaben machen.", ["muss", "musst", "m\xFCssen"], "muss", "Mus\xEDm robi\u0165 \xFAlohy."], ["Du ___ jetzt nach Hause gehen.", ["muss", "musst", "m\xFCsst"], "musst", "Teraz mus\xED\u0161 \xEDs\u0165 domov."], ["Felix ___ gut tanzen.", ["kann", "kannst", "k\xF6nnen"], "kann", "Felix vie dobre tancova\u0165."], ["Ihr ___ leise sein.", ["m\xFCssen", "m\xFCsst", "musst"], "m\xFCsst", "Mus\xEDte by\u0165 ticho."], ["Lena ___ am Montag lernen.", ["muss", "musst", "m\xFCssen"], "muss", "Lena sa mus\xED v pondelok u\u010Di\u0165."]] },
+        { t: "order", title: "Sloveso na 2. miesto", d: "Poskladaj vetu", items: [["Am Montag spiele ich Fu\xDFball.", "V pondelok hr\xE1m futbal."], ["Ich kann gut schwimmen.", "Viem dobre pl\xE1va\u0165."], ["Am Samstag treffe ich Freunde.", "V sobotu stretnem kamar\xE1tov."], ["Ich muss Hausaufgaben machen.", "Mus\xEDm robi\u0165 \xFAlohy."], ["Was machst du gern?", "\u010Co r\xE1d rob\xED\u0161?"], ["Am Sonntag lese ich ein Buch.", "V nede\u013Eu \u010D\xEDtam knihu."], ["Kannst du Rad fahren?", "Vie\u0161 bicyklova\u0165?"]] },
+        { t: "mc", title: "liest, f\xE4hrt", d: "lesen a fahren", items: [["Du ___ gern Comics.", ["liest", "lest", "lesst"], "liest", "R\xE1d \u010D\xEDta\u0161 komiksy."], ["Er ___ Rad.", ["f\xE4hrt", "fahrt", "f\xE4hrst"], "f\xE4hrt", "Bicykluje sa."], ["Ich ___ gern B\xFCcher.", ["lese", "liese", "liest"], "lese", "R\xE1d \u010D\xEDtam knihy."], ["___ du Ski?", ["F\xE4hrst", "Fahrst", "F\xE4hrt"], "F\xE4hrst", "Ly\u017Euje\u0161?"], ["Lena ___ ein Buch.", ["liest", "lest", "lese"], "liest", "Lena \u010D\xEDta knihu."], ["Wir ___ Rad.", ["fahren", "f\xE4hren", "fahrt"], "fahren", "Bicyklujeme sa."]] },
+        { t: "type", title: "Prelo\u017E", d: "Nap\xED\u0161 po nemecky", items: [["R\xE1d pl\xE1vam.", "Ich schwimme gern."], ["V pondelok hr\xE1m futbal.", "Am Montag spiele ich Fu\xDFball."], ["Viem dobre tancova\u0165.", "Ich kann gut tanzen."], ["Mus\xEDm sa u\u010Di\u0165.", "Ich muss lernen."], ["M\xE1\u0161 v sobotu \u010Das?", "Hast du am Samstag Zeit?"]] },
+        { t: "vlisten", title: "Vo\u013En\xFD \u010Das", d: "\u010Co znamen\xE1, \u010Do po\u010Duje\u0161?" },
+        { t: "vmemory", title: "Pexeso", d: "Slov\xED\u010Dka v dvojiciach" }
+      ]
+    },
+    {
+      id: "m4l1",
+      mod: 4,
+      code: "4.1",
+      title: "Mein Tagesablauf",
+      sk: "M\xF4j de\u0148",
+      goals: ["ko\u013Eko je hod\xEDn", "m\xF4j denn\xFD program", "um, von \u2026 bis", "odlu\u010Dite\u013En\xE9 sloves\xE1 (aufstehen)", "wie oft?"],
+      vocab: [["Wie sp\xE4t ist es?", "Ko\u013Eko je hod\xEDn?"], ["die Uhr", "hodiny"], ["halb", "pol"], ["Viertel nach", "\u0161tvr\u0165 po"], ["Viertel vor", "tri\u0161tvrte (\u0161tvr\u0165 pred)"], ["aufstehen", "vst\xE1va\u0165"], ["fr\xFChst\xFCcken", "ra\u0148ajkova\u0165"], ["zu Mittag essen", "obedova\u0165"], ["nach Hause kommen", "pr\xEDs\u0165 domov"], ["fernsehen", "pozera\u0165 telev\xEDziu"], ["einkaufen", "nakupova\u0165"], ["anrufen", "zavola\u0165"], ["mitkommen", "\xEDs\u0165 s niek\xFDm"], ["ins Bett gehen", "\xEDs\u0165 spa\u0165"], ["immer", "v\u017Edy"], ["oft", "\u010Dasto"], ["manchmal", "niekedy"], ["nie", "nikdy"], ["Wann?", "Kedy?"], ["Wie oft?", "Ako \u010Dasto?"]],
+      phrases: [["Wie sp\xE4t ist es?", "Ko\u013Eko je hod\xEDn?"], ["Es ist drei Uhr.", "S\xFA tri hodiny."], ["Es ist halb vier.", "Je pol \u0161tvrtej. (3:30)"], ["Wann stehst du auf?", "Kedy vst\xE1va\u0161?"], ["Ich stehe um sieben Uhr auf.", "Vst\xE1vam o siedmej."], ["Die Schule ist von acht bis eins.", "\u0160kola je od \xF4smej do jednej."], ["Am Abend sehe ich fern.", "Ve\u010Der pozer\xE1m telev\xEDziu."], ["Wie oft siehst du fern? \u2013 Manchmal.", "Ako \u010Dasto pozer\xE1\u0161 TV? \u2013 Niekedy."], ["Kommst du mit?", "P\xF4jde\u0161 so mnou?"]],
+      grammar: () => gbox("Hodiny", "Wie sp\xE4t ist es?", "".concat(exs([["Es ist drei Uhr.", "3:00"], ["Es ist Viertel nach drei.", "3:15"], ["Es ist halb vier.", "3:30"], ["Es ist Viertel vor vier.", "3:45"]])).concat(note('<b>halb vier</b> = pol <b>\u0161tvrtej</b> (3:30), presne ako po slovensky! Nehovor \u201Ehalb drei", to je 2:30.'))) + gbox("Kedy?", "um, von \u2026 bis, am", exs([["um sieben Uhr", "o siedmej"], ["von acht bis eins", "od \xF4smej do jednej"], ["am Montag", "v pondelok"]])) + gbox("Odlu\u010Dite\u013En\xE9 sloves\xE1", "aufstehen \u2192 Ich stehe \u2026 auf.", '<p>Niektor\xE9 sloves\xE1 maj\xFA predponu, ktor\xE1 vo vete <b>odsko\u010D\xED na koniec</b>:</p><table><tbody>\n   <tr><td>auf|stehen</td><td class="v"><button class="tsay" data-de="Ich stehe um sieben Uhr auf.">Ich <span class="mark">stehe</span> um sieben Uhr <span class="mark">auf</span>.</button></td></tr>\n   <tr><td>fern|sehen</td><td class="v"><button class="tsay" data-de="Am Abend sehe ich fern.">Am Abend <span class="mark">sehe</span> ich <span class="mark">fern</span>.</button></td></tr>\n   <tr><td>ein|kaufen</td><td class="v"><button class="tsay" data-de="Wir kaufen am Samstag ein.">Wir <span class="mark">kaufen</span> am Samstag <span class="mark">ein</span>.</button></td></tr>\n   <tr><td>an|rufen</td><td class="v"><button class="tsay" data-de="Ich rufe meine Oma an.">Ich <span class="mark">rufe</span> meine Oma <span class="mark">an</span>.</button></td></tr></tbody></table>\n   '.concat(note("Pr\xEDzvuk je na predpone: <b>auf</b>stehen, <b>fern</b>sehen, <b>ein</b>kaufen."))),
+      pron: ["aufstehen", "fernsehen", "einkaufen", "anrufen", "mitkommen"],
+      ex: [
+        { t: "clock", title: "Ko\u013Eko je hod\xEDn?", d: "Pozri na hodiny" },
+        { t: "mc", title: "Ktor\xE1 veta je spr\xE1vna?", d: "Kam ide predpona?", items: [["Vst\xE1vam o siedmej.", ["Ich stehe um sieben Uhr auf.", "Ich aufstehe um sieben Uhr.", "Ich stehe auf um sieben Uhr."], "Ich stehe um sieben Uhr auf."], ["Ve\u010Der pozer\xE1m telev\xEDziu.", ["Am Abend sehe ich fern.", "Am Abend ich fernsehe.", "Am Abend fernsehe ich."], "Am Abend sehe ich fern."], ["Vol\xE1m babke.", ["Ich rufe meine Oma an.", "Ich anrufe meine Oma.", "Ich rufe an meine Oma."], "Ich rufe meine Oma an."], ["V sobotu nakupujeme.", ["Am Samstag kaufen wir ein.", "Am Samstag wir einkaufen.", "Am Samstag einkaufen wir."], "Am Samstag kaufen wir ein."], ["Kedy vst\xE1va\u0161?", ["Wann stehst du auf?", "Wann aufstehst du?", "Wann du stehst auf?"], "Wann stehst du auf?"], ["P\xF4jde\u0161 s nami?", ["Kommst du mit?", "Mitkommst du?", "Du kommst mit?"], "Kommst du mit?"]] },
+        { t: "mc", title: "um, am, von \u2026 bis", d: "Kedy?", items: [["Ich stehe ___ sieben Uhr auf.", ["um", "am", "von"], "um", "Vst\xE1vam o siedmej."], ["___ Montag habe ich Sport.", ["Um", "Am", "Von"], "Am", "V pondelok m\xE1m telocvik."], ["Die Schule ist ___ eins.", ["von acht bis", "um acht bis", "am acht bis"], "von acht bis", "\u0160kola je od \xF4smej do jednej."], ["Ich gehe ___ neun Uhr ins Bett.", ["um", "am"], "um", "Idem spa\u0165 o deviatej."], ["___ Wochenende schlafe ich lange.", ["Am", "Um"], "Am", "Cez v\xEDkend sp\xEDm dlho."], ["Ich lerne ___ f\xFCnf.", ["von drei bis", "um drei bis"], "von drei bis", "U\u010D\xEDm sa od troch do piatich."]] },
+        { t: "listen", title: "Ako \u010Dasto?", d: "immer, oft, manchmal, nie", items: [["immer", "v\u017Edy"], ["oft", "\u010Dasto"], ["manchmal", "niekedy"], ["nie", "nikdy"], ["jeden Tag", "ka\u017Ed\xFD de\u0148"], ["am Wochenende", "cez v\xEDkend"]] },
+        { t: "order", title: "Poskladaj vetu", d: "M\xF4j de\u0148", items: [["Ich stehe um sieben Uhr auf.", "Vst\xE1vam o siedmej."], ["Wann stehst du auf?", "Kedy vst\xE1va\u0161?"], ["Am Abend sehe ich fern.", "Ve\u010Der pozer\xE1m telev\xEDziu."], ["Ich rufe meine Oma an.", "Vol\xE1m babke."], ["Die Schule ist von acht bis eins.", "\u0160kola je od \xF4smej do jednej."], ["Kommst du mit?", "P\xF4jde\u0161 so mnou?"]] },
+        { t: "type", title: "Nap\xED\u0161 \u010Das", d: "Po nemecky slovami", items: [["3:00", "drei Uhr|Es ist drei Uhr."], ["3:30", "halb vier|Es ist halb vier."], ["7:15", "Viertel nach sieben|Es ist Viertel nach sieben."], ["8:45", "Viertel vor neun|Es ist Viertel vor neun."], ["12:00", "zw\xF6lf Uhr|Es ist zw\xF6lf Uhr."], ["6:30", "halb sieben|Es ist halb sieben."]] },
+        { t: "vmemory", title: "Pexeso", d: "Slov\xED\u010Dka v dvojiciach" }
+      ]
+    },
+    {
+      id: "m4l2",
+      mod: 4,
+      code: "4.2",
+      title: "Meine Schulsachen",
+      sk: "Moje \u0161kolsk\xE9 veci",
+      goals: ["\u0161kolsk\xE9 potreby a predmety", "presn\xFD \u010Das (8:15 Uhr)", "den / die / das (4. p\xE1d)", "ihn / sie / es", "war, hatte"],
+      vocab: [["der Bleistift", "ceruzka"], ["der Kuli", "pero (gu\u013E\xF4\u010Dkov\xE9)"], ["der F\xFCller", "plniace pero"], ["der Buntstift", "pastelka"], ["der Radiergummi", "guma"], ["der Spitzer", "str\xFAhadlo"], ["das Lineal", "prav\xEDtko"], ["die Schere", "no\u017Enice"], ["der Kleber", "lepidlo"], ["das Heft", "zo\u0161it"], ["das Buch", "kniha"], ["die Schultasche", "\u0161kolsk\xE1 ta\u0161ka"], ["das M\xE4ppchen", "pera\u010Dn\xEDk"], ["das Lieblingsfach", "ob\u013E\xFAben\xFD predmet"], ["Mathe", "matematika"], ["Deutsch", "nem\u010Dina"], ["Englisch", "angli\u010Dtina"], ["Kunst", "v\xFDtvarn\xE1 v\xFDchova"], ["Musik", "hudobn\xE1 v\xFDchova"], ["Sport", "telesn\xE1 v\xFDchova"], ["brauchen", "potrebova\u0165"], ["finden", "n\xE1js\u0165"], ["gestern", "v\u010Dera"]],
+      phrases: [["Hast du einen Bleistift?", "M\xE1\u0161 ceruzku?"], ["Ich brauche den Radiergummi.", "Potrebujem gumu."], ["Wo ist mein Lineal? Ich finde es nicht.", "Kde je moje prav\xEDtko? Neviem ho n\xE1js\u0165."], ["Der Kuli? Ich habe ihn hier.", "Pero? M\xE1m ho tu."], ["Mein Lieblingsfach ist Sport.", "M\xF4j ob\u013E\xFAben\xFD predmet je telesn\xE1."], ["Die Schule beginnt um acht Uhr f\xFCnfzehn.", "\u0160kola za\u010D\xEDna o 8:15."], ["Gestern war ich im Kino.", "V\u010Dera som bol v kine."], ["Ich hatte keine Zeit.", "Nemal som \u010Das."]],
+      grammar: () => gbox("4. p\xE1d", "den, die, das", '<p>Po sloves\xE1ch ako <i>brauchen, haben, finden, suchen</i> (koho/\u010Do?) sa men\xED <b>len der \u2192 den</b>:</p><table><tbody>\n   <tr><td>der Bleistift</td><td class="v"><button class="tsay" data-de="Ich brauche den Bleistift.">Ich brauche <span class="der">den</span> Bleistift.</button></td></tr>\n   <tr><td>die Schere</td><td class="v"><button class="tsay" data-de="Ich brauche die Schere.">Ich brauche <span class="die">die</span> Schere.</button></td></tr>\n   <tr><td>das Heft</td><td class="v"><button class="tsay" data-de="Ich brauche das Heft.">Ich brauche <span class="das">das</span> Heft.</button></td></tr>\n   <tr><td>mn. \u010D.</td><td class="v"><button class="tsay" data-de="Ich brauche die B\xFCcher.">Ich brauche die B\xFCcher.</button></td></tr></tbody></table>\n   '.concat(note("Je to to ist\xE9 pravidlo ako <i>ein \u2192 einen</i>. Mu\u017Esk\xFD rod dostane <b>-n</b>."))) + gbox("Z\xE1men\xE1 v 4. p\xE1de", "ihn, sie, es", exs([["Der Kuli? Ich habe ihn.", "ho (der \u2192 ihn)"], ["Die Schere? Ich habe sie.", "ju (die \u2192 sie)"], ["Das Heft? Ich finde es nicht.", "ho (das \u2192 es)"], ["Die B\xFCcher? Ich habe sie.", "ich (mn. \u010D. \u2192 sie)"]])) + conj("Minul\xFD \u010Das", "war (bol), hatte (mal)", [["bol som", "ich", "war"], ["bol si", "du", "war|st"], ["bol/bola", "er / sie", "war"], ["mal som", "ich", "hatte"], ["mal si", "du", "hatte|st"], ["mal/mala", "er / sie", "hatte"]], note("Aj tu s\xFA <i>ich</i> a <i>er</i> rovnak\xE9: <i>ich war, er war; ich hatte, er hatte</i>.")) + gbox("V\xFDslovnos\u0165", "ich-Laut a ach-Laut", '<p><b>ch</b> m\xE1 dva zvuky. Po <b>a, o, u, au</b> je tvrd\xE9 ako na\u0161e <b>ch</b>: <i>acht, Buch, doch</i>. Inde je m\xE4kk\xE9, ako ke\u010F za\u0161epk\xE1\u0161 \u201Ehj": <i>ich, Milch, B\xFCcher, M\xE4dchen</i>.</p>'),
+      pron: ["ich", "Milch", "B\xFCcher", "M\xE4dchen", "acht", "Buch", "doch", "Kuchen"],
+      ex: [
+        { t: "vlisten", title: "\u0160kolsk\xE9 veci", d: "\u010Co znamen\xE1, \u010Do po\u010Duje\u0161?" },
+        { t: "mc", title: "den, die, das?", d: "Ich brauche\u2026", items: [["Ich brauche ___ Bleistift.", ["den", "die", "das"], "den", "Potrebujem ceruzku."], ["Hast du ___ Schere?", ["den", "die", "das"], "die", "M\xE1\u0161 no\u017Enice?"], ["Ich finde ___ Lineal nicht.", ["den", "die", "das"], "das", "Neviem n\xE1js\u0165 prav\xEDtko."], ["Ich suche ___ Radiergummi.", ["den", "die", "das"], "den", "H\u013Ead\xE1m gumu."], ["Ich habe ___ Heft.", ["den", "die", "das"], "das", "M\xE1m zo\u0161it."], ["Ich brauche ___ B\xFCcher.", ["den", "die", "das"], "die", "Potrebujem knihy."], ["Nimmst du ___ F\xFCller?", ["den", "die", "das"], "den", "Zoberie\u0161 si plniace pero?"], ["Brauchst du ___ Schultasche?", ["den", "die", "das"], "die", "Potrebuje\u0161 ta\u0161ku?"]] },
+        { t: "mc", title: "ihn, sie, es?", d: "Z\xE1men\xE1 v 4. p\xE1de", items: [["Wo ist der Kuli? \u2013 Ich habe ___.", ["ihn", "sie", "es"], "ihn", ""], ["Wo ist die Schere? \u2013 Ich habe ___.", ["ihn", "sie", "es"], "sie", ""], ["Wo ist das Heft? \u2013 Ich finde ___ nicht.", ["ihn", "sie", "es"], "es", ""], ["Brauchst du den Spitzer? \u2013 Ja, ich brauche ___.", ["ihn", "sie", "es"], "ihn", ""], ["Hast du die B\xFCcher? \u2013 Ja, ich habe ___.", ["ihn", "sie", "es"], "sie", ""], ["Wo ist das Lineal? \u2013 Ich suche ___.", ["ihn", "sie", "es"], "es", ""], ["Wo ist der Radiergummi? \u2013 Lena hat ___.", ["ihn", "sie", "es"], "ihn", ""]] },
+        { t: "mc", title: "war alebo hatte?", d: "Minul\xFD \u010Das", items: [["Gestern ___ ich im Kino.", ["war", "hatte"], "war", "V\u010Dera som bol v kine."], ["Ich ___ keine Zeit.", ["war", "hatte"], "hatte", "Nemal som \u010Das."], ["Wo ___ du gestern?", ["warst", "hattest"], "warst", "Kde si bol v\u010Dera?"], ["Felix ___ krank.", ["war", "hatte"], "war", "Felix bol chor\xFD."], ["Wir ___ Mathe.", ["waren", "hatten"], "hatten", "Mali sme matiku."], ["___ du Sport?", ["Warst", "Hattest"], "Hattest", "Mal si telesn\xFA?"], ["Lena ___ gestern in der Schule.", ["war", "hatte"], "war", "Lena bola v\u010Dera v \u0161kole."]] },
+        { t: "sort", title: "ich-Laut alebo ach-Laut?", d: "M\xE4kk\xE9 alebo tvrd\xE9 ch?", cats: ["ich (m\xE4kk\xE9)", "ach (tvrd\xE9)"], items: [["ich", "ich (m\xE4kk\xE9)"], ["Buch", "ach (tvrd\xE9)"], ["acht", "ach (tvrd\xE9)"], ["Milch", "ich (m\xE4kk\xE9)"], ["M\xE4dchen", "ich (m\xE4kk\xE9)"], ["doch", "ach (tvrd\xE9)"], ["Kuchen", "ach (tvrd\xE9)"], ["B\xFCcher", "ich (m\xE4kk\xE9)"], ["Nacht", "ach (tvrd\xE9)"], ["sechzehn", "ich (m\xE4kk\xE9)"], ["K\xFCche", "ich (m\xE4kk\xE9)"], ["Mittwoch", "ach (tvrd\xE9)"]] },
+        { t: "listen", title: "Predmety", d: "Ktor\xFD predmet po\u010Duje\u0161?", items: [["Mathe", "matematika"], ["Deutsch", "nem\u010Dina"], ["Englisch", "angli\u010Dtina"], ["Kunst", "v\xFDtvarn\xE1 v\xFDchova"], ["Musik", "hudobn\xE1 v\xFDchova"], ["Sport", "telesn\xE1 v\xFDchova"], ["Biologie", "biol\xF3gia"], ["Geschichte", "dejepis"], ["Erdkunde", "zemepis"]] },
+        { t: "vmemory", title: "Pexeso", d: "Slov\xED\u010Dka v dvojiciach" }
+      ]
+    },
+    {
+      id: "m4l3",
+      mod: 4,
+      code: "4.3",
+      title: "Mein Pausenbrot",
+      sk: "Moja desiata",
+      goals: ["jedlo na desiatu", "sp\xFDta\u0165 sa na cenu, objedna\u0165 si", "wollen", "mich, dich, f\xFCr", "rozkazovac\xED sp\xF4sob (Komm! Nimm!)"],
+      vocab: [["das Pausenbrot", "desiata"], ["das Brot", "chlieb"], ["das Br\xF6tchen", "ro\u017Eok, \u017Eem\u013Ea"], ["die Brezel", "pracl\xEDk"], ["die Butter", "maslo"], ["der K\xE4se", "syr"], ["die Wurst", "sal\xE1ma, klob\xE1sa"], ["der Schinken", "\u0161unka"], ["das Ei", "vajce"], ["der Apfel", "jablko"], ["die Banane", "ban\xE1n"], ["der Joghurt", "jogurt"], ["das M\xFCsli", "m\xFCsli"], ["der Kuchen", "kol\xE1\u010D"], ["das Eis", "zmrzlina"], ["kosten", "st\xE1\u0165 (cena)"], ["der Euro", "euro"], ["der Cent", "cent"], ["wollen", "chcie\u0165"], ["f\xFCr", "pre"]],
+      phrases: [["Was isst du in der Pause?", "\u010Co je\u0161 cez prest\xE1vku?"], ["Ich esse ein K\xE4sebrot.", "Jem chlieb so syrom."], ["Ich will ein Br\xF6tchen.", "Chcem ro\u017Eok."], ["Was kostet die Brezel?", "Ko\u013Eko stoj\xED pracl\xEDk?"], ["Sie kostet einen Euro.", "Stoj\xED jedno euro."], ["Ein Wasser, bitte.", "Vodu, pros\xEDm."], ["Das ist f\xFCr dich.", "To je pre teba."], ["Ist das f\xFCr mich?", "Je to pre m\u0148a?"], ["Gib mir bitte den Apfel!", "Daj mi, pros\xEDm, jablko!"], ["Nimm doch eine Banane!", "Zober si ban\xE1n!"], ["Danke sch\xF6n! \u2013 Bitte sch\xF6n!", "\u010Eakujem pekne! \u2013 Pros\xEDm pekne!"]],
+      grammar: () => conj("Chcie\u0165", "wollen", [["chcem", "ich", "will"], ["chce\u0161", "du", "will|st"], ["chce", "er / sie", "will"], ["chceme", "wir", "woll|en"], ["chcete", "ihr", "woll|t"], ["chc\xFA", "sie", "woll|en"]], note('<i>Ich will</i> znie dos\u0165 r\xE1zne. Zdvorilej\u0161ie je <i>ich m\xF6chte</i>. Pozor: <b>ich will</b> neznamen\xE1 \u201Ebudem"!')) + gbox("Pre koho?", "f\xFCr + mich, dich", exs([["Das ist f\xFCr mich.", "To je pre m\u0148a."], ["Das ist f\xFCr dich.", "To je pre teba."], ["Ich rufe dich an.", "Zavol\xE1m ti."]]) + "<p>Po <b>f\xFCr</b> je v\u017Edy 4. p\xE1d: <i>f\xFCr mich, f\xFCr dich, f\xFCr den Freund</i>.</p>") + gbox("Rozkazovac\xED sp\xF4sob", "Komm! Nimm! Gib!", '<p>Vezmi tvar s <i>du</i>, odstr\xE1\u0148 <b>du</b> a koncovku <b>-st</b>:</p><table><tbody>\n   <tr><td>du kommst</td><td class="v"><button class="tsay" data-de="Komm!">Komm!</button></td></tr>\n   <tr><td>du machst</td><td class="v"><button class="tsay" data-de="Mach schnell!">Mach schnell!</button></td></tr>\n   <tr><td>du nimmst</td><td class="v"><button class="tsay" data-de="Nimm eine Banane!">Nimm eine Banane!</button></td></tr>\n   <tr><td>du gibst</td><td class="v"><button class="tsay" data-de="Gib mir den Apfel!">Gib mir den Apfel!</button></td></tr>\n   <tr><td>du isst</td><td class="v"><button class="tsay" data-de="Iss dein Brot!">Iss dein Brot!</button></td></tr></tbody></table>\n   '.concat(note("Pri rozkaze hlas na konci <b>kles\xE1</b> a za vetou je v\xFDkri\u010Dn\xEDk."))),
+      pron: ["Komm!", "Nimm!", "Gib mir bitte den Apfel!", "Was kostet das?"],
+      ex: [
+        { t: "vlisten", title: "Jedlo", d: "\u010Co znamen\xE1, \u010Do po\u010Duje\u0161?" },
+        { t: "mc", title: "will, willst, wollen?", d: "Sloveso wollen", items: [["Ich ___ ein Br\xF6tchen.", ["will", "willst", "wollen"], "will", "Chcem ro\u017Eok."], ["___ du einen Apfel?", ["Will", "Willst", "Wollt"], "Willst", "Chce\u0161 jablko?"], ["Wir ___ Pizza essen.", ["will", "wollen", "wollt"], "wollen", "Chceme jes\u0165 pizzu."], ["Felix ___ ein Eis.", ["will", "willst"], "will", "Felix chce zmrzlinu."], ["Was ___ ihr trinken?", ["wollen", "wollt"], "wollt", "\u010Co chcete pi\u0165?"], ["Meine Freunde ___ Fu\xDFball spielen.", ["will", "wollen"], "wollen", "Moji kamar\xE1ti chc\xFA hra\u0165 futbal."]] },
+        { t: "mc", title: "Rozkaz!", d: "Komm, nimm, gib\u2026", items: [["(kommen) ___ bitte her!", ["Komm", "Kommst", "Kommen"], "Komm", "Po\u010F sem, pros\xEDm!"], ["(nehmen) ___ doch eine Banane!", ["Nimm", "Nehm", "Nimmst"], "Nimm", "Zober si ban\xE1n!"], ["(geben) ___ mir bitte den Apfel!", ["Gib", "Geb", "Gibst"], "Gib", "Daj mi jablko!"], ["(essen) ___ dein Brot!", ["Iss", "Ess", "Isst"], "Iss", "Zjedz si chlieb!"], ["(trinken) ___ Wasser!", ["Trink", "Trinkst", "Trinken"], "Trink", "Pi vodu!"], ["(machen) ___ schnell!", ["Mach", "Machst", "Machen"], "Mach", "R\xFDchlo!"]] },
+        { t: "mc", title: "mich alebo dich?", d: "Pre m\u0148a, pre teba", items: [["Ist das Brot f\xFCr ___? \u2013 Ja, das ist f\xFCr dich.", ["mich", "dich"], "mich", "Je ten chlieb pre m\u0148a?"], ["Das Eis ist f\xFCr ___, Lena!", ["mich", "dich"], "dich", "Zmrzlina je pre teba, Lena!"], ["Ich rufe ___ an, Mama.", ["mich", "dich"], "dich", "Zavol\xE1m ti, mami."], ["Rufst du ___ morgen an? \u2013 Ja, ich rufe dich an.", ["mich", "dich"], "mich", "Zavol\xE1\u0161 mi zajtra?"], ["Der Apfel ist ___ dich.", ["f\xFCr", "mit"], "f\xFCr", "Jablko je pre teba."]] },
+        { t: "listen", title: "Ko\u013Eko to stoj\xED?", d: "Po\u010D\xFAvaj cenu", items: [["Das kostet einen Euro.", "1,00 \u20AC"], ["Das kostet zwei Euro f\xFCnfzig.", "2,50 \u20AC"], ["Die Brezel kostet achtzig Cent.", "0,80 \u20AC"], ["Das Br\xF6tchen kostet f\xFCnfzig Cent.", "0,50 \u20AC"], ["Das kostet drei Euro zwanzig.", "3,20 \u20AC"], ["Der Saft kostet ein Euro f\xFCnfzehn.", "1,15 \u20AC"], ["Das Eis kostet zwei Euro.", "2,00 \u20AC"], ["Das kostet vier Euro neunzig.", "4,90 \u20AC"]] },
+        { t: "order", title: "Poskladaj vetu", d: "V bufete", items: [["Was isst du in der Pause?", "\u010Co je\u0161 cez prest\xE1vku?"], ["Ich esse ein K\xE4sebrot.", "Jem chlieb so syrom."], ["Was kostet die Brezel?", "Ko\u013Eko stoj\xED pracl\xEDk?"], ["Gib mir bitte den Apfel!", "Daj mi, pros\xEDm, jablko!"], ["Das ist f\xFCr dich.", "To je pre teba."], ["Ich will ein Br\xF6tchen.", "Chcem ro\u017Eok."]] },
+        { t: "vmemory", title: "Pexeso", d: "Jedlo v dvojiciach" }
+      ]
+    }
+  ];
+  const MODS = { 0: "Wir starten", 1: "Modul 1: Das sind wir!", 2: "Modul 2: Bei uns zu Hause", 3: "Modul 3: So leben wir!", 4: "Modul 4: Ein ganz normaler Schultag" };
+  const LBY = {};
+  LESSONS.forEach((l) => {
+    LBY[l.id] = l;
+  });
+  const vpool = (l) => l.vocab.map(([de, sk]) => ({ de, sk }));
+  function gOrder(list) {
+    list = pick(list, Math.min(6, list.length));
+    let i = 0, score = 0;
+    function next() {
+      if (i >= list.length) return endScreen(score, list.length, () => gOrder(list));
+      const [de, sk] = list[i];
+      const words = de.split(" ");
+      let pool = shuffle(words.map((w, k) => ({ w, k })));
+      if (pool.map((x) => x.w).join(" ") === de && words.length > 1) pool.reverse();
+      let ans = [], missed = false;
+      function draw() {
+        stage.innerHTML = '<div class="meta"><span>Poskladaj vetu</span><span>'.concat(i + 1, " / ").concat(list.length, " \xB7 spr\xE1vne ").concat(score, '</span></div>\n      <div class="big" style="font-size:1.3rem">').concat(esc(sk), '</div>\n      <div class="tiles answer" aria-label="Tvoja veta">').concat(ans.map((x, k) => '<button class="tile" data-a="'.concat(k, '">').concat(esc(x.w), "</button>")).join(""), '</div>\n      <div class="tiles">').concat(pool.map((x, k) => '<button class="tile" data-p="'.concat(k, '">').concat(esc(x.w), "</button>")).join(""), '</div>\n      <div class="row"><button class="btn" id="check" ').concat(pool.length ? "disabled" : "", '>Skontrolova\u0165</button><button class="btn ghost" id="hint">Vypo\u010Du\u0165 vetu</button></div>\n      <div class="feedback" id="fb"></div>');
+        stage.querySelectorAll("[data-p]").forEach((b) => b.onclick = () => {
+          ans.push(pool.splice(+b.dataset.p, 1)[0]);
+          draw();
+        });
+        stage.querySelectorAll("[data-a]").forEach((b) => b.onclick = () => {
+          pool.push(ans.splice(+b.dataset.a, 1)[0]);
+          draw();
+        });
+        $("#hint", stage).onclick = () => {
+          missed = true;
+          speak(de);
+        };
+        $("#check", stage).onclick = () => {
+          const fb = $("#fb", stage);
+          if (ans.map((x) => x.w).join(" ") === de) {
+            if (!missed) {
+              score++;
+              addStar();
+            }
+            fb.className = "feedback ok";
+            fb.textContent = "Richtig! Spr\xE1vne!";
+            speak(de);
+            i++;
+            stage.querySelectorAll("button").forEach((x) => x.disabled = true);
+            setTimeout(next, 2200);
+          } else {
+            missed = true;
+            fb.className = "feedback no";
+            fb.textContent = "E\u0161te nie. Pam\xE4taj: sloveso je na 2. mieste (v ot\xE1zke \xE1no/nie na 1.). Klikni na slovo hore a vr\xE1\u0165 ho sp\xE4\u0165.";
+          }
+        };
+      }
+      draw();
+    }
+    next();
+  }
+  function gSortCats(cats, items, title) {
+    const words = pick(items, Math.min(9, items.length));
+    const n = words.length;
+    let sel = null, done = 0, score = 0;
+    const missed = /* @__PURE__ */ new Set();
+    const cls = (c) => ["der", "die", "das"].includes(c) ? c : "cat";
+    stage.innerHTML = '<div class="meta"><span>'.concat(esc(title), '</span><span class="srt">0 / ').concat(n, '</span></div>\n   <p class="hand">Klikni na slovo (zaznie) a potom na spr\xE1vnu krabicu.</p>\n   <div class="tiles spool">').concat(words.map((w, k) => '<button class="tile" data-k="'.concat(k, '">').concat(esc(w[0])).concat(w[2] ? "<small> \xB7 ".concat(esc(w[2]), "</small>") : "", "</button>")).join(""), '</div>\n   <div class="sortboxes" style="--n:').concat(cats.length, '">').concat(cats.map((c, ci) => '<button class="sbox '.concat(cls(c), '" data-c="').concat(ci, '"><b>').concat(esc(c), '</b><span class="in" data-box="').concat(ci, '"></span></button>')).join(""), '</div><div class="feedback" id="fb"></div>');
+    stage.querySelectorAll(".spool .tile").forEach((b) => b.onclick = () => {
+      stage.querySelectorAll(".spool .tile").forEach((x) => x.classList.remove("sel"));
+      b.classList.add("sel");
+      sel = +b.dataset.k;
+      speak(words[sel][0]);
+    });
+    stage.querySelectorAll(".sbox").forEach((bx) => bx.onclick = () => {
+      const fb = $("#fb", stage);
+      if (sel === null) {
+        fb.className = "feedback";
+        fb.textContent = "Najprv klikni na slovo.";
+        return;
+      }
+      const w = words[sel], c = cats[+bx.dataset.c];
+      if (w[1] === c) {
+        if (!missed.has(sel)) {
+          score++;
+          addStar();
+        }
+        stage.querySelector('[data-box="'.concat(bx.dataset.c, '"]')).insertAdjacentHTML("beforeend", "<span>".concat(esc(w[0]), "</span>"));
+        stage.querySelector('.spool [data-k="'.concat(sel, '"]')).remove();
+        speak(cls(c) === "cat" ? w[0] : "".concat(c, " ").concat(w[0]));
+        fb.className = "feedback ok";
+        fb.textContent = "Richtig! ".concat(w[0], " \u2192 ").concat(c);
+        sel = null;
+        done++;
+        $(".srt", stage).textContent = "".concat(done, " / ").concat(n);
+        if (done === n) setTimeout(() => endScreen(score, n, () => gSortCats(cats, items, title)), 1500);
+      } else {
+        missed.add(sel);
+        fb.className = "feedback no";
+        fb.textContent = "Nie, ".concat(w[0], " sem nepatr\xED. Sk\xFAs in\xFA krabicu.");
+      }
+    });
+  }
+  const hourW = (h) => h === 1 ? "eins" : NUM[h];
+  function gClock() {
+    const rounds = [];
+    for (let k = 0; k < 8; k++) {
+      const h = 1 + Math.floor(Math.random() * 12), m = [0, 15, 30, 45][Math.floor(Math.random() * 4)], nx = h % 12 + 1;
+      const a = m === 0 ? "".concat(h === 1 ? "ein" : NUM[h], " Uhr") : m === 15 ? "Viertel nach ".concat(hourW(h)) : m === 30 ? "halb ".concat(hourW(nx)) : "Viertel vor ".concat(hourW(nx));
+      const wrong = /* @__PURE__ */ new Set();
+      if (m === 30) wrong.add("halb ".concat(hourW(h)));
+      if (m === 45) wrong.add("Viertel nach ".concat(hourW(nx)));
+      if (m === 15) wrong.add("Viertel vor ".concat(hourW(h)));
+      if (m === 0) wrong.add("halb ".concat(hourW(h)));
+      while (wrong.size < 3) {
+        const hh = 1 + Math.floor(Math.random() * 12);
+        const f = ["".concat(hh === 1 ? "ein" : NUM[hh], " Uhr"), "halb ".concat(hourW(hh)), "Viertel nach ".concat(hourW(hh)), "Viertel vor ".concat(hourW(hh))][Math.floor(Math.random() * 4)];
+        if (f !== a) wrong.add(f);
+      }
+      rounds.push({ h, m, a, opts: shuffle([a, ...wrong]), sayAfter: "Es ist ".concat(a, "."), dig: "".concat(h, ":").concat(String(m).padStart(2, "0")) });
+    }
+    const face = (h, m) => {
+      const ha = (h % 12 + m / 60) * 30 * Math.PI / 180, ma = m * 6 * Math.PI / 180;
+      const ticks = Array.from({ length: 12 }, (_, i) => {
+        const a = i * 30 * Math.PI / 180;
+        return '<line x1="'.concat(60 + 44 * Math.sin(a), '" y1="').concat(60 - 44 * Math.cos(a), '" x2="').concat(60 + 50 * Math.sin(a), '" y2="').concat(60 - 50 * Math.cos(a), '" stroke="var(--ink)" stroke-width="').concat(i % 3 ? 2 : 4, '" stroke-linecap="round"/>');
+      }).join("");
+      return '<svg class="clock" viewBox="0 0 120 120" role="img" aria-label="Hodiny"><circle cx="60" cy="60" r="56" fill="var(--card)" stroke="var(--pen)" stroke-width="4"/>'.concat(ticks, '<line x1="60" y1="60" x2="').concat(60 + 28 * Math.sin(ha), '" y2="').concat(60 - 28 * Math.cos(ha), '" stroke="var(--ink)" stroke-width="6" stroke-linecap="round"/><line x1="60" y1="60" x2="').concat(60 + 42 * Math.sin(ma), '" y2="').concat(60 - 42 * Math.cos(ma), '" stroke="var(--die)" stroke-width="3.5" stroke-linecap="round"/><circle cx="60" cy="60" r="4" fill="var(--ink)"/></svg>');
+    };
+    mcGame({ rounds, title: "Wie sp\xE4t ist es?", render: (r) => '<div class="row" style="gap:20px">'.concat(face(r.h, r.m), '<p class="hand">Kr\xE1tka ru\u010Di\u010Dka = hodiny<br>dlh\xE1 \u010Derven\xE1 = min\xFAty</p></div>'), after: (r) => "Richtig! ".concat(r.dig, " = ").concat(r.a) });
+  }
+  const COLORS = [["rot", "#d62828"], ["blau", "#1d4ed8"], ["gelb", "#facc15"], ["gr\xFCn", "#16a34a"], ["wei\xDF", "#ffffff"], ["schwarz", "#111111"], ["braun", "#8b5a2b"], ["orange", "#f97316"], ["rosa", "#f9a8d4"], ["lila", "#8b5cf6"], ["grau", "#9ca3af"]];
+  function gColors() {
+    const rounds = pick(COLORS, 8).map(([w, c]) => ({ w, c, a: w, opts: shuffle([w, ...pick(COLORS.filter((x) => x[0] !== w), 3).map((x) => x[0])]), sayAfter: w }));
+    mcGame({ rounds, title: "Welche Farbe ist das?", render: (r) => '<div class="swatch" style="background:'.concat(r.c, '" role="img" aria-label="farba"></div>') });
+  }
+  function gReview(mod) {
+    const items = LESSONS.filter((l) => l.mod === mod).flatMap((l) => l.ex.filter((e) => e.t === "mc").flatMap((e) => e.items));
+    runMc(pick(items, 10), "Opakovanie: ".concat(MODS[mod]));
+  }
+  function runMc(items, title) {
+    const rounds = items.map(([q, opts, a, hint, say]) => ({ s: q, a, opts: shuffle(opts), sk: hint || "", sayAfter: say || (q.includes("___") ? q.replace("___", a).replace(/\s*\(.*?\)\s*$/, "").replace(/^\(\w+\)\s*/, "") : a) }));
+    mcGame({ rounds, title, render: (r) => '<div class="big" style="font-size:'.concat(r.s.includes("___") ? "" : "1.35rem", '">').concat(esc(r.s).replace("___", '<span class="blank">?</span>'), "</div>").concat(r.sk ? '<p class="hand">'.concat(esc(r.sk), "</p>") : ""), after: (r) => "Richtig! ".concat(r.sayAfter) });
+  }
+  function runListen(items, title) {
+    const answers = [...new Set(items.map((x) => x[1]))];
+    const rounds = pick(items, Math.min(8, items.length)).map(([au, an]) => ({ audio: au, a: an, opts: shuffle([an, ...pick(answers.filter((x) => x !== an), 3)]), au }));
+    mcGame({ rounds, title, render: () => '<div class="big">\u010Co po\u010Duje\u0161?</div>'.concat(replayBtn), after: (r) => "Richtig! \u201E".concat(r.au, "\u201C = ").concat(r.a) });
+  }
+  function runType(items, title) {
+    const rounds = pick(items, Math.min(6, items.length)).map(([p, a]) => {
+      const alts = a.split("|");
+      return { p, a: alts[0], alts };
+    });
+    typeGame({ rounds, title, render: (r) => '<div class="big">'.concat(esc(r.p), "</div>") });
+  }
+  let doneMap = {};
+  try {
+    doneMap = JSON.parse(localStorage.getItem("dh-done") || "{}") || {};
+  } catch (e) {
+  }
+  let curLesson = "m1l1";
+  try {
+    curLesson = localStorage.getItem("dh-cur") || "m1l1";
+  } catch (e) {
+  }
+  if (!LBY[curLesson]) curLesson = "m1l1";
+  function markDone(lid, idx) {
+    doneMap[lid] = doneMap[lid] || [];
+    if (!doneMap[lid].includes(idx)) doneMap[lid].push(idx);
+    try {
+      localStorage.setItem("dh-done", JSON.stringify(doneMap));
+    } catch (e) {
+    }
+  }
+  const STATIC = ["pozdravy", "abeceda", "cisla", "lektion1", "gramatika"];
+  const TABS = [["cesta", "Lekcie"], ["vyslovnost", "V\xFDslovnos\u0165"], ["hry", "Hry"]];
+  $("#tabRow").innerHTML = TABS.map(([id, l]) => '<button role="tab" data-t="'.concat(id, '">').concat(l, "</button>")).join("");
+  function hideAll() {
+    ["cesta", "lekcia", "vyslovnost", "hry", ...STATIC].forEach((p) => {
+      const e = $("#" + p);
+      if (e) e.hidden = true;
+    });
+  }
+  function selTab(t) {
+    TABS.forEach(([x]) => $('[data-t="'.concat(x, '"]')).setAttribute("aria-selected", x === t));
+  }
+  function showTab(t) {
+    if (hasTTS) speechSynthesis.cancel();
+    hideAll();
+    selTab(t);
+    if (t === "cesta") {
+      renderPath();
+      $("#cesta").hidden = false;
+    } else {
+      $("#" + t).hidden = false;
+      if (t === "hry") {
+        renderHrySel();
+        if (!$("#stage").innerHTML) startGame(curGame);
+      }
+    }
+    try {
+      localStorage.setItem("dh-tab", t);
+    } catch (e) {
+    }
+    window.scrollTo({ top: 0 });
+  }
+  $("#tabRow").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-t]");
+    if (b) showTab(b.dataset.t);
+  });
+  function renderPath() {
+    const curIdx = LESSONS.findIndex((l) => l.id === curLesson);
+    let html = "";
+    for (const m of [0, 1, 2, 3, 4]) {
+      const ls = LESSONS.filter((l) => l.mod === m);
+      html += '<div class="mod"><h3>'.concat(esc(MODS[m]), '</h3><div class="lgrid">').concat(ls.map((l) => {
+        const i = LESSONS.indexOf(l);
+        const d = (doneMap[l.id] || []).length, t = l.ex.length;
+        const st = l.id === curLesson ? "now" : i < curIdx ? "past" : "next";
+        return '<button class="lcard '.concat(st, '" data-l="').concat(l.id, '"><span class="lnum">').concat(l.code, '</span><span class="ltxt"><b>').concat(esc(l.title), "</b><span>").concat(esc(l.sk), '</span></span><span class="lmeta">').concat(st === "now" ? '<span class="pill">Teraz sme tu</span>' : "").concat(st === "next" ? '<span class="pill soft">e\u0161te len pr\xEDde</span>' : "", '<span class="prog"><span style="width:').concat(Math.round(d / t * 100), '%"></span></span><small>').concat(d, " / ").concat(t, " cvi\u010Den\xED</small></span></button>");
+      }).join(""), "\n      ").concat(m > 0 ? '<button class="lcard review" data-rev="'.concat(m, '"><span class="lnum">\u2605</span><span class="ltxt"><b>Wir trainieren</b><span>Opakovanie cel\xE9ho modulu</span></span></button>') : "", "</div></div>");
+    }
+    $("#path").innerHTML = html;
+  }
+  $("#path").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-l]");
+    if (b) return openLesson(b.dataset.l);
+    const r = e.target.closest("[data-rev]");
+    if (r) {
+      openReview(+r.dataset.rev);
+    }
+  });
+  function openReview(m) {
+    hideAll();
+    selTab("cesta");
+    $("#lekcia").hidden = false;
+    $("#lhead").innerHTML = '<button class="btn ghost" id="lback">\u2190 V\u0161etky lekcie</button><p class="eyebrow">'.concat(esc(MODS[m]), '</p><h2>Wir trainieren</h2><p class="hand">Zmie\u0161an\xE9 ot\xE1zky zo v\u0161etk\xFDch lekci\xED modulu.</p>');
+    $("#lback").onclick = () => showTab("cesta");
+    $("#subtabs").innerHTML = "";
+    $("#lgen").innerHTML = "";
+    $("#lgen").hidden = false;
+    STATIC.forEach((s) => $("#" + s).hidden = true);
+    lessonCtx = { again: () => openReview(m), lid: null };
+    $("#stage").innerHTML = "";
+    stage = $("#lstage");
+    stage.hidden = false;
+    gReview(m);
+    window.scrollTo({ top: 0 });
+  }
+  let curL = null;
+  function openLesson(id, sec) {
+    const l = LBY[id];
+    if (!l) return;
+    curL = l;
+    if (hasTTS) speechSynthesis.cancel();
+    hideAll();
+    selTab("cesta");
+    $("#lekcia").hidden = false;
+    try {
+      localStorage.setItem("dh-open", id);
+    } catch (e) {
+    }
+    const i = LESSONS.indexOf(l), prev = LESSONS[i - 1], next = LESSONS[i + 1];
+    $("#lhead").innerHTML = '<div class="row" style="justify-content:space-between"><button class="btn ghost" id="lback">\u2190 V\u0161etky lekcie</button>\n    <button class="toggle" id="lnow" aria-pressed="'.concat(l.id === curLesson, '">').concat(l.id === curLesson ? "Toto pr\xE1ve preber\xE1me" : "Ozna\u010Di\u0165: teraz sme tu", '</button></div>\n    <p class="eyebrow">').concat(esc(MODS[l.mod])).concat(l.mod ? " \xB7 Lektion ".concat(l.code.split(".")[1]) : "", "</p><h2>").concat(esc(l.title), '</h2><p class="hand" style="font-size:1.3rem">').concat(esc(l.sk), '</p>\n    <div class="goals"><b>Nau\u010D\xED\u0161 sa:</b> ').concat(l.goals.map(esc).join(" \xB7 "), '</div>\n    <div class="row lnav">').concat(prev ? '<button class="btn ghost" data-go="'.concat(prev.id, '">\u2190 ').concat(prev.code, " ").concat(esc(prev.title), "</button>") : "").concat(next ? '<button class="btn ghost" data-go="'.concat(next.id, '">').concat(next.code, " ").concat(esc(next.title), " \u2192</button>") : "", "</div>");
+    $("#lback").onclick = () => showTab("cesta");
+    $("#lnow").onclick = () => {
+      curLesson = l.id;
+      try {
+        localStorage.setItem("dh-cur", l.id);
+      } catch (e) {
+      }
+      openLesson(l.id, curSec);
+      toast("Ulo\u017Een\xE9: toto pr\xE1ve preber\xE1te");
+    };
+    $("#lhead").querySelectorAll("[data-go]").forEach((b) => b.onclick = () => openLesson(b.dataset.go));
+    const secs = l.sections || [["Slov\xED\u010Dka", "@vocab"], ["Vety", "@phr"], ["Gramatika", "@gram"], ["Cvi\u010Denia", "@ex"]];
+    $("#subtabs").innerHTML = secs.map(([n, k], j) => '<button data-s="'.concat(j, '">').concat(n, "</button>")).join("");
+    $("#subtabs").onclick = (e) => {
+      const b = e.target.closest("[data-s]");
+      if (b) showSec(+b.dataset.s);
+    };
+    let curSec = 0;
+    function showSec(j) {
+      curSec = j;
+      const [n, k] = secs[j];
+      $("#subtabs").querySelectorAll("button").forEach((b, x) => b.setAttribute("aria-selected", x === j));
+      STATIC.forEach((s) => $("#" + s).hidden = true);
+      $("#lgen").hidden = true;
+      $("#lstage").hidden = true;
+      $("#lstage").innerHTML = "";
+      if (k[0] === "#") {
+        const el = $(k);
+        $("#lhost").appendChild(el);
+        el.hidden = false;
+      } else {
+        $("#lgen").hidden = false;
+        $("#lgen").innerHTML = renderSec(l, k);
+        wireSec(l, k);
+      }
+    }
+    const want = sec != null ? sec : (doneMap[l.id] || []).length ? secs.length - 1 : 0;
+    showSec(Math.min(want, secs.length - 1));
+    window.scrollTo({ top: 0 });
+  }
+  function renderSec(l, k) {
+    if (k === "@vocab") return '<div class="intro"><h3>Slov\xED\u010Dka</h3><p>Klikni na karti\u010Dku a vypo\u010Duj si ju. Farba \u010Dlena: <span class="der">der</span>, <span class="die">die</span>, <span class="das">das</span>.</p></div>\n    <div class="grid">'.concat(l.vocab.map(([de, sk]) => '<button class="say" data-de="'.concat(esc(de), '">').concat(SPK, '<span class="txt"><span class="de">').concat(artColor(de), '</span><span class="sk">').concat(esc(sk), "</span></span></button>")).join(""), '</div>\n    <div class="row"><button class="btn" data-run="vlisten">Precvi\u010D: Po\u010D\xFAvaj</button><button class="btn ghost" data-run="vmemory">Pexeso</button><button class="btn ghost" data-run="vdict">Dikt\xE1t</button></div>');
+    if (k === "@phr") return '<div class="intro"><h3>D\xF4le\u017Eit\xE9 vety</h3><p>Vypo\u010Duj si vetu a zopakuj ju nahlas.</p></div><div class="grid">'.concat(l.phrases.map((p) => card(p)).join(""), '</div>\n    <div class="row"><button class="btn" id="playAll">Prehra\u0165 v\u0161etky vety</button></div>');
+    if (k === "@gram") return '<div class="gram">'.concat(l.grammar(), "</div>").concat(l.pron ? '<div class="box" style="max-width:720px"><h3><span class="tag">V\xFDslovnos\u0165</span>Vypo\u010Duj si a zopakuj</h3>'.concat(chips(l.pron), "</div>") : "");
+    if (k === "@ex") {
+      const d = doneMap[l.id] || [];
+      return '<div class="intro"><h3>Cvi\u010Denia</h3><p>Cho\u010F pekne po porad\xED. Hotov\xE9 cvi\u010Denie dostane fajku.</p></div>\n    <div class="gamepick">'.concat(l.ex.map((e, j) => '<button data-ex="'.concat(j, '" aria-pressed="false"><b>').concat(d.includes(j) ? "\u2713 " : "").concat(esc(e.title), "</b><span>").concat(esc(e.d || ""), "</span></button>")).join(""), "</div>");
+    }
+    return "";
+  }
+  function wireSec(l, k) {
+    const g = $("#lgen");
+    g.querySelectorAll("[data-run]").forEach((b) => b.onclick = () => runEx(l, { t: b.dataset.run, title: b.textContent }, -1));
+    const pa = $("#playAll", g);
+    if (pa) pa.onclick = () => speakSeq([...g.querySelectorAll(".grid .say")].map((el) => ({ t: el.dataset.de, el })));
+    g.querySelectorAll("[data-ex]").forEach((b) => b.onclick = () => {
+      g.querySelectorAll("[data-ex]").forEach((x) => x.setAttribute("aria-pressed", x === b));
+      runEx(l, l.ex[+b.dataset.ex], +b.dataset.ex);
+    });
+  }
+  function runEx(l, ex, idx) {
+    if (hasTTS) speechSynthesis.cancel();
+    $("#stage").innerHTML = "";
+    stage = $("#lstage");
+    stage.hidden = false;
+    lessonCtx = { lid: l.id, idx, again: () => runEx(l, ex, idx) };
+    const P = vpool(l);
+    ({
+      mc: () => runMc(pick(ex.items, Math.min(8, ex.items.length)), ex.title),
+      listen: () => runListen(ex.items, ex.title),
+      type: () => runType(ex.items, ex.title),
+      order: () => gOrder(ex.items),
+      sort: () => gSortCats(ex.cats, ex.items, ex.title),
+      clock: gClock,
+      colors: gColors,
+      vlisten: () => gListen(P),
+      vmemory: () => gMemory(P.map((x) => [x.de, x.sk])),
+      vdict: () => gDictation(P.map((x) => x.de)),
+      game: () => GAMES[ex.g]()
+    })[ex.t]();
+    stage.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+  function renderHrySel() {
+    const s = $("#hrySel");
+    if (s.options.length) return;
+    s.innerHTML = LESSONS.map((l) => '<option value="'.concat(l.id, '">').concat(l.code, " ").concat(esc(l.title), "</option>")).join("");
+    s.value = curLesson;
+  }
+  function hryPool() {
+    const l = LBY[$("#hrySel").value] || LBY[curLesson];
+    return vpool(l);
+  }
+  $("#hrySel").addEventListener("change", () => {
+    if (["listen", "memory", "dictation", "balloons"].includes(curGame)) startGame(curGame);
+  });
+  function boot() {
+    let t = (location.hash || "").slice(1);
+    if (LBY[t]) return openLesson(t);
+    if (TABS.some((x) => x[0] === t)) return showTab(t);
+    let open = "";
+    try {
+      open = localStorage.getItem("dh-open") || "";
+    } catch (e) {
+    }
+    showTab("cesta");
+  }
+  boot();
+})();
+</script>
+</body>
+</html>
